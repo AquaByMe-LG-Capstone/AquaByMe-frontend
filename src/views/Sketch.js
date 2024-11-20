@@ -150,8 +150,6 @@ const Sketch = () => {
 				zIndex: 10
 			}}>
 				<CirclePicker
-					width="700px"
-					height="32px"
 					color={brushColor}
 					onChangeComplete={changeBrushColor}
 				/>

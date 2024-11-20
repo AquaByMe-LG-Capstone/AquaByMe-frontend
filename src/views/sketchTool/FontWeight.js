@@ -1,0 +1,2 @@
+import {fabric} from 'fabric';
+
