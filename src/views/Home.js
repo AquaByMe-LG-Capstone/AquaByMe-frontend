@@ -7,6 +7,7 @@ const shaders = Shaders.create({
 		frag: GLSL`
 		precision highp float;
 		varying vec2 uv;
+		uniform float u_daytime;
 		uniform float u_time;
 
 		// Color of bottom water
@@ -23,14 +24,11 @@ const shaders = Shaders.create({
 
 		// Returns sky color based on time
 		vec3 getSkyCol() {
-			// vvvvvvv will be a uniform var??? vvvvvvvv
-			float dayTime = mod(u_time / 60.0, 1.0);
-
 			// Smooth blend for each phase of the day
-			float morningToNoon = smoothstep(0.0, 0.25, dayTime) * (1.0 - smoothstep(0.25, 0.5, dayTime));
-			float noonToEvening = smoothstep(0.25, 0.5, dayTime) * (1.0 - smoothstep(0.5, 0.75, dayTime));
-			float eveningToNight = smoothstep(0.5, 0.75, dayTime) * (1.0 - smoothstep(0.75, 1.0, dayTime));
-			float nightToMorning = smoothstep(0.75, 1.0, dayTime) * (1.0 - smoothstep(0.0, 0.25, dayTime));
+			float morningToNoon = smoothstep(0.0, 0.25, u_daytime) * (1.0 - smoothstep(0.25, 0.5, u_daytime));
+			float noonToEvening = smoothstep(0.25, 0.5, u_daytime) * (1.0 - smoothstep(0.5, 0.75, u_daytime));
+			float eveningToNight = smoothstep(0.5, 0.75, u_daytime) * (1.0 - smoothstep(0.75, 1.0, u_daytime));
+			float nightToMorning = smoothstep(0.75, 1.0, u_daytime) * (1.0 - smoothstep(0.0, 0.25, u_daytime));
 
 			// Combine weights and interpolate colors
 			vec3 dayColor = morningCol * morningToNoon +
@@ -87,10 +85,41 @@ const shaders = Shaders.create({
 	}
 });
 
+function getPortionedTime() {
+	const today = new Date();
+	let hour = today.getHours() / 23;
+	return hour;
+}
+
 class Aquarium extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			u_time: 0,
+		};
+		this.startT = null;
+		this.loop = this.loop.bind(this);
+	}
+
+	componentDidMount() {
+		this.startT = performance.now();
+		requestAnimationFrame(this.loop); // eslint-disable-line no-undef
+	}
+
+	componentWillUnmount() {
+		cancelAnimationFrame(this.rafId); // eslint-disable-line no-undef
+	}
+
+	loop(t) {
+		const elapsedTime = (t - this.startT) / 1000; // Elapsed time in seconds
+		this.setState({ u_time: elapsedTime });
+		this.rafId = requestAnimationFrame(this.loop); // eslint-disable-line no-undef
+	}
+
 	render() {
-		const { u_time } = this.props;
-		return <Node shader={shaders.aquarium} uniforms={{ u_time }} />;
+		const { u_time } = this.state;
+		const { u_time_of_day } = getPortionedTime();
+		return <Node shader={shaders.aquarium} uniforms={{ u_time, u_time_of_day }} />;
 	}
 }
 
@@ -98,7 +127,7 @@ const Home = () => {
 	return (
 		<>
 			<Surface width={'100vw'} height={'100vh'}>
-				<Aquarium u_time={100} /> {/* u_time will be some sort of time variable */}
+				<Aquarium />
 			</Surface>
 		</>
 	);
