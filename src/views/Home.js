@@ -1,14 +1,6 @@
-// import Alert from '@enact/sandstone/Alert';
-// import BodyText from '@enact/sandstone/BodyText';
-// import Button from '@enact/sandstone/Button';
-// import css from './Main.module.less';
-// import $L from '@enact/i18n/$L';
-// import {useConfigs} from '../hooks/configs';
-// import {usePopup} from './HomeState';
 import React from "react";
 import { Shaders, Node, GLSL } from "gl-react";
 import { Surface } from "gl-react-dom";
-
 
 const shaders = Shaders.create({
 	aquarium: {
@@ -25,6 +17,9 @@ const shaders = Shaders.create({
 		const vec3 noonCol = vec3(0.6157, 0.8078, 1.0);     // Bright blue (noon)
 		const vec3 eveningCol = vec3(1.0, 0.6745, 0.5137);  // Orange-pink (evening)
 		const vec3 nightCol = vec3(0.0863, 0.0863, 0.2667);    // Dark blue (night)
+
+		// number of waves
+		const int waveCnt = 4;
 
 		// Returns sky color based on time
 		vec3 getSkyCol() {
@@ -45,13 +40,45 @@ const shaders = Shaders.create({
 
 			return dayColor;
 		}
+		
+		float waveComponent(vec2 uv, vec3 look) {
+			float waveFreq = 5.0;
+			vec2 p = uv * waveFreq;
+			float t = u_time * 3.0; // Time variable for wave animation
+
+			// Wave contributions
+			float bump = sin(p.x * 2.0 + t + sin(p.y * 0.73 + t));
+			bump += sin(p.x * 1.43 + t) * 0.5;
+
+			float u = dot(look, vec3(0., 1., 0.));
+			bump *= u * smoothstep(9., 1., u);
+			bump *= smoothstep(0.5, 1., u) * 0.5;
+
+			return bump;
+		}
 
 		// Returns water color based on depth
 		vec3 waterCol() {
 			float depth = uv.y;
-			vec3 baseCol = mix(bottomCol, getSkyCol(), smoothstep(0.3 * depth, 1., depth));
+			vec3 color = mix(bottomCol, getSkyCol(), smoothstep(0.3 * depth, 1., depth));
 
-			return baseCol;
+			// calculate and add waves at the top
+			vec2 uv2 = uv * 2.0 - 1.0;
+			uv2.y *= uv.y / uv.x; // Correct for aspect ratio
+
+			// Compute wave height at the current position
+			vec3 lookVec = vec3(0., 0.634, 0.);
+			float waveHeight = 0.;
+			float bobFactor = 0.08 * (cos(u_time * 0.2) + 1.);
+
+			for(int i = 0; i < waveCnt; i++) {
+				float offsetFactor = float(i);
+				float wave = waveComponent(uv2 + vec2(0.1 * offsetFactor, 1. / (offsetFactor + 2.)), lookVec) - 0.16 * offsetFactor;
+				waveHeight += smoothstep(0.016, 0., abs(wave - uv2.y + 1.2 + 0.2 * offsetFactor));
+			}
+
+			color += 0.3 * waveHeight * vec3(0.1, 0.2, 0.4);
+			return color;
 		}
 
 		void main() {
