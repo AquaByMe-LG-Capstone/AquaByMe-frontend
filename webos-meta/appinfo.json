@@ -4,8 +4,10 @@
 	"vendor": "LG Electronics, Inc.",
 	"type": "web",
 	"main": "index.html",
-	"title": "Enact Template",
-	"accessibility": {"supportsAudioGuidance": true},
+	"title": "Aqua By Me",
+	"accessibility": {
+		"supportsAudioGuidance": true
+	},
 	"allowAudioCapture": false,
 	"allowVideoCapture": false,
 	"disableBackHistoryAPI": true,
