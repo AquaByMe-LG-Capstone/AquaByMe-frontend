@@ -6,7 +6,7 @@ import { CirclePicker } from 'react-color';
 
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
-	const bgColor = useRef('#FFFFFF');
+	const [bgColor] = useState("#FFFFFF");
 
 	// 그리기/선택 모드 구분
 	const [activeTool, setActiveTool] = useState("draw");
@@ -23,7 +23,7 @@ const Sketch = () => {
 			new fabric.Canvas('canvas', {
 				height: 780,
 				width: 1700,
-				backgroundColor: bgColor.current,
+				backgroundColor: bgColor,
 				isDrawingMode: true,
 			});
 
@@ -48,8 +48,8 @@ const Sketch = () => {
 			} else if (activeTool === "erase") {
 				canvas.isDrawingMode = true;
 				canvas.freeDrawingBrush.color = "rgba(0,0,0,1)";
-				canvas.contextTop.globalCompositeOperation = "destination-out";
 				canvas.freeDrawingBrush.width = lineWidth;
+				canvas.contextTop.globalCompositeOperation = "destination-out";
 			} else {
 				canvas.isDrawingMode = false;
 				canvas.selection = activeTool === "select";
@@ -69,7 +69,7 @@ const Sketch = () => {
 	const clearCanvas = useCallback(() => {
 		if (canvas) {
 			canvas.clear();
-			canvas.backgroundColor = bgColor.current;
+			canvas.setBackgroundColor("#FFFFFF", canvas.renderAll.bind(canvas));
 		}
 	}, [canvas]);
 
@@ -80,6 +80,8 @@ const Sketch = () => {
 			setBrushColor(selectedColor);
 			if (canvas) {
 				canvas.freeDrawingBrush.color = selectedColor;
+				canvas.isDrawingMode = true;
+				setActiveTool("draw");
 			}
 		},
 		[canvas]);
@@ -115,7 +117,7 @@ const Sketch = () => {
 			position: "fixed",
 			top: "60px",
 			left: "1400px",
-			backgroundColor: "gray",
+			backgroundColor: "white",
 			zIndex: 10,
 			display: isColorPickerVisible ? "block" : "none",
 			padding: "10px",
