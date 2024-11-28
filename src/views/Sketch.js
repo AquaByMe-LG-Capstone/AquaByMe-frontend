@@ -14,6 +14,9 @@ const Sketch = () => {
 	const [lineWidth] = useState(2);
 	const [brushColor, setBrushColor] = useState("#000000");
 
+	// 팔레트 토클
+	const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+
 	useEffect(() => {
 		const initCanvas =
 			new fabric.Canvas('canvas', {
@@ -30,7 +33,7 @@ const Sketch = () => {
 		return () => {
 			initCanvas.dispose();
 		};
-	}, [brushColor, lineWidth]);
+	}, []);
 
 	useEffect(() => {
 		if (canvas) {
@@ -68,6 +71,10 @@ const Sketch = () => {
 		},
 		[canvas]);
 
+	const toggleColorPicker = useCallback(() => {
+		setIsColorPickerVisible((prev) => !prev);
+	  }, []);
+
 	//MARK: - 객체 삭제
 	const deleteSelectedObjects = useCallback(() => {
 		if (canvas) {
@@ -83,22 +90,28 @@ const Sketch = () => {
 	//MARK: - 레이아웃
 	const buttons = [
 		{ icon: "trash", onClick: clearCanvas },
-		{ icon: "P", onClick: () => setActiveTool("draw") },
-		{ icon: "S", onClick: () => setActiveTool("select") },
-		{ icon: "L", onClick: () => changeLineWidth(2) },
-		{ icon: "M", onClick: () => changeLineWidth(6) },
-		{ icon: "B", onClick: () => changeLineWidth(10) },
-		{ icon: "del", onClick: deleteSelectedObjects },
+		{ icon: "pencil", onClick: () => setActiveTool("draw") },
+		{ icon: "select", onClick: () => setActiveTool("select") },
+		{ icon: "light", onClick: () => changeLineWidth(2) },
+		{ icon: "medium", onClick: () => changeLineWidth(6) },
+		{ icon: "bold", onClick: () => changeLineWidth(10) },
+		{ icon: "delect", onClick: deleteSelectedObjects },
+		{ icon: "palette", onClick: toggleColorPicker }, 
 	];
+
 	const styles = {
 		colorPicker: {
-			position: "fixed",
-			top: "20px",
-			left: "1400px",
-			backgroundColor: "white",
-			zIndex: 10,
+		  position: "fixed",
+		  top: "60px",
+		  left: "1400px",
+		  backgroundColor: "white",
+		  zIndex: 10,
+		  display: isColorPickerVisible ? "block" : "none",
+		  padding: "10px",
+		  border: "1px solid #ccc",
+		  borderRadius: "8px",
 		},
-	};
+	  };
 
 	return (
 		<div>
