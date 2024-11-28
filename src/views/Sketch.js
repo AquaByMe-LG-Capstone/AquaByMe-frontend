@@ -11,7 +11,7 @@ const Sketch = () => {
 	const [activeTool, setActiveTool] = useState("draw");
 
 	// 브러쉬 초기 설정
-	const [lineWidth] = useState(2);
+	const [lineWidth, setLineWidth] = useState(1);
 	const [brushColor, setBrushColor] = useState("#000000");
 
 	// 팔레트 토클
@@ -44,21 +44,19 @@ const Sketch = () => {
 		}
 	}, [activeTool, canvas]);
 
+	//MARK: - 두께 설정
+	useEffect(() => {
+		if (canvas) {
+			canvas.freeDrawingBrush.width = lineWidth;
+		}
+	}, [lineWidth, canvas]);
+
 	const clearCanvas = useCallback(() => {
 		if (canvas) {
 			canvas.clear();
 			canvas.backgroundColor = bgColor.current;
 		}
 	}, [canvas]);
-
-	//MARK: - 두께 설정
-	const changeLineWidth = useCallback(
-		(width) => {
-			if (canvas) {
-				canvas.freeDrawingBrush.width = width;
-			}
-		},
-		[canvas]);
 
 	//MARK: - 색상 설정
 	const changeBrushColor = useCallback(
@@ -73,7 +71,7 @@ const Sketch = () => {
 
 	const toggleColorPicker = useCallback(() => {
 		setIsColorPickerVisible((prev) => !prev);
-	  }, []);
+	}, []);
 
 	//MARK: - 객체 삭제
 	const deleteSelectedObjects = useCallback(() => {
@@ -92,26 +90,35 @@ const Sketch = () => {
 		{ icon: "trash", onClick: clearCanvas },
 		{ icon: "pencil", onClick: () => setActiveTool("draw") },
 		{ icon: "select", onClick: () => setActiveTool("select") },
-		{ icon: "light", onClick: () => changeLineWidth(2) },
-		{ icon: "medium", onClick: () => changeLineWidth(6) },
-		{ icon: "bold", onClick: () => changeLineWidth(10) },
 		{ icon: "delect", onClick: deleteSelectedObjects },
-		{ icon: "palette", onClick: toggleColorPicker }, 
+		{ icon: "palette", onClick: toggleColorPicker },
 	];
 
 	const styles = {
 		colorPicker: {
-		  position: "fixed",
-		  top: "60px",
-		  left: "1400px",
-		  backgroundColor: "white",
-		  zIndex: 10,
-		  display: isColorPickerVisible ? "block" : "none",
-		  padding: "10px",
-		  border: "1px solid #ccc",
-		  borderRadius: "8px",
+			position: "fixed",
+			top: "60px",
+			left: "1400px",
+			backgroundColor: "white",
+			zIndex: 10,
+			display: isColorPickerVisible ? "block" : "none",
+			padding: "10px",
+			border: "1px solid #ccc",
+			borderRadius: "8px",
 		},
-	  };
+		sliderContainer: {
+			margin: "10px 0",
+			display: "flex",
+			alignItems: "center",
+		},
+		sliderLabel: {
+			marginRight: "10px",
+			fontWeight: "bold",
+		},
+		slider: {
+			width: "500px",
+		},
+	};
 
 	return (
 		<div>
@@ -119,14 +126,28 @@ const Sketch = () => {
 				<Button
 					key={index}
 					icon={icon}
-					iconOnly
-					backgroundOpacity="opaque"
-					onClick={onClick}
+			iconOnly
+			backgroundOpacity="opaque"
+			onClick={onClick}
 				/>
 			))}
 
 			<div style={styles.colorPicker}>
 				<CirclePicker color={brushColor} onChangeComplete={changeBrushColor} />
+			</div>
+
+			<div style={styles.sliderContainer}>
+				<label style={styles.sliderLabel}>두께바꾸기 시작</label>
+				<input
+					type="range"
+					min="1"
+					max="50"
+					step="5"
+					value={lineWidth}
+					onChange={(e) => setLineWidth(Number(e.target.value))}
+					style={styles.slider}
+				/>
+				<span>끝</span>
 			</div>
 
 			<canvas id="canvas" />
