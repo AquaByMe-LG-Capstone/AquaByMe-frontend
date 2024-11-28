@@ -68,6 +68,18 @@ const Sketch = () => {
 		},
 		[canvas]);
 
+	//MARK: - 객체 삭제
+	const deleteSelectedObjects = useCallback(() => {
+		if (canvas) {
+			const activeObjects = canvas.getActiveObjects();
+			activeObjects.forEach((object) => {
+				canvas.remove(object);
+			});
+			canvas.discardActiveObject();
+			canvas.renderAll();
+		}
+	}, [canvas]);
+
 	//MARK: - 레이아웃
 	const buttons = [
 		{ icon: "trash", onClick: clearCanvas },
@@ -76,6 +88,7 @@ const Sketch = () => {
 		{ icon: "L", onClick: () => changeLineWidth(2) },
 		{ icon: "M", onClick: () => changeLineWidth(6) },
 		{ icon: "B", onClick: () => changeLineWidth(10) },
+		{ icon: "del", onClick: deleteSelectedObjects },
 	];
 	const styles = {
 		colorPicker: {
