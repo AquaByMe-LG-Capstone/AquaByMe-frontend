@@ -3,6 +3,7 @@ import Button from '@enact/sandstone/Button';
 import { fabric } from 'fabric';
 import { CirclePicker } from 'react-color';
 
+
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
 	const bgColor = useRef('#FFFFFF');
@@ -33,16 +34,30 @@ const Sketch = () => {
 		return () => {
 			initCanvas.dispose();
 		};
+		// eslint-disable-next-line
 	}, []);
 
 	useEffect(() => {
 		if (canvas) {
-			canvas.isDrawingMode = activeTool === "draw";
-			canvas.selection = activeTool === "select";
-			canvas.forEachObject((obj) => (obj.selectable = activeTool === "select"));
+			if (activeTool === "draw") {
+				canvas.isDrawingMode = true;
+				canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+				canvas.freeDrawingBrush.color = brushColor;
+				canvas.freeDrawingBrush.width = lineWidth;
+				canvas.contextTop.globalCompositeOperation = "source-over";
+			} else if (activeTool === "erase") {
+				canvas.isDrawingMode = true;
+				canvas.freeDrawingBrush.color = "rgba(0,0,0,1)";
+				canvas.contextTop.globalCompositeOperation = "destination-out";
+				canvas.freeDrawingBrush.width = lineWidth;
+			} else {
+				canvas.isDrawingMode = false;
+				canvas.selection = activeTool === "select";
+				canvas.forEachObject((obj) => (obj.selectable = activeTool === "select"));
+			}
 			canvas.renderAll();
 		}
-	}, [activeTool, canvas]);
+	}, [activeTool, canvas, brushColor, lineWidth]);
 
 	//MARK: - 두께 설정
 	useEffect(() => {
@@ -89,6 +104,7 @@ const Sketch = () => {
 	const buttons = [
 		{ icon: "trash", onClick: clearCanvas },
 		{ icon: "pencil", onClick: () => setActiveTool("draw") },
+		{ icon: "eraser", onClick: () => setActiveTool("erase") },
 		{ icon: "select", onClick: () => setActiveTool("select") },
 		{ icon: "delect", onClick: deleteSelectedObjects },
 		{ icon: "palette", onClick: toggleColorPicker },
@@ -99,7 +115,7 @@ const Sketch = () => {
 			position: "fixed",
 			top: "60px",
 			left: "1400px",
-			backgroundColor: "white",
+			backgroundColor: "gray",
 			zIndex: 10,
 			display: isColorPickerVisible ? "block" : "none",
 			padding: "10px",
@@ -126,9 +142,9 @@ const Sketch = () => {
 				<Button
 					key={index}
 					icon={icon}
-			iconOnly
-			backgroundOpacity="opaque"
-			onClick={onClick}
+					iconOnly
+					backgroundOpacity="opaque"
+					onClick={onClick}
 				/>
 			))}
 
@@ -144,6 +160,7 @@ const Sketch = () => {
 					max="50"
 					step="5"
 					value={lineWidth}
+					// eslint-disable-next-line
 					onChange={(e) => setLineWidth(Number(e.target.value))}
 					style={styles.slider}
 				/>
