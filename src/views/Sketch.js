@@ -105,7 +105,7 @@ const Sketch = () => {
 	//MARK: - 레이아웃
 	const buttons = [
 		{ icon: "trash", onClick: clearCanvas },
-		{ icon: "pencil", onClick: () => setActiveTool("draw") },
+		{ icon: "edit", onClick: () => setActiveTool("draw") },
 		{ icon: "eraser", onClick: () => setActiveTool("erase") },
 		{ icon: "select", onClick: () => setActiveTool("select") },
 		{ icon: "delect", onClick: deleteSelectedObjects },
