@@ -3,24 +3,27 @@ import Button from '@enact/sandstone/Button';
 import { fabric } from 'fabric';
 import { CirclePicker } from 'react-color';
 
+
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
-	const bgColor = useRef('#FFFFFF');
+	const [bgColor] = useState("#FFFFFF");
 
 	// 그리기/선택 모드 구분
 	const [activeTool, setActiveTool] = useState("draw");
 
 	// 브러쉬 초기 설정
-	const [lineWidth, setLineWidth] = useState(2);
+	const [lineWidth, setLineWidth] = useState(1);
 	const [brushColor, setBrushColor] = useState("#000000");
-	const [showPicker, setShowPicker] = useState(false);
+
+	// 팔레트 토클
+	const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
 
 	useEffect(() => {
 		const initCanvas =
 			new fabric.Canvas('canvas', {
 				height: 780,
 				width: 1700,
-				backgroundColor: bgColor.current,
+				backgroundColor: bgColor,
 				isDrawingMode: true,
 			});
 
@@ -31,129 +34,141 @@ const Sketch = () => {
 		return () => {
 			initCanvas.dispose();
 		};
+		// eslint-disable-next-line
 	}, []);
 
 	useEffect(() => {
 		if (canvas) {
-			if (activeTool == "draw") {
+			if (activeTool === "draw") {
 				canvas.isDrawingMode = true;
-				canvas.selection = true;
-			} else if (activeTool == "select") {
+				canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+				canvas.freeDrawingBrush.color = brushColor;
+				canvas.freeDrawingBrush.width = lineWidth;
+				canvas.contextTop.globalCompositeOperation = "source-over";
+			} else if (activeTool === "erase") {
+				canvas.isDrawingMode = true;
+				canvas.freeDrawingBrush.color = "rgba(0,0,0,1)";
+				canvas.freeDrawingBrush.width = lineWidth;
+				canvas.contextTop.globalCompositeOperation = "destination-out";
+			} else {
 				canvas.isDrawingMode = false;
-				canvas.selection = false;
+				canvas.selection = activeTool === "select";
+				canvas.forEachObject((obj) => (obj.selectable = activeTool === "select"));
 			}
 			canvas.renderAll();
 		}
-	}, [activeTool, canvas]);
+	}, [activeTool, canvas, brushColor, lineWidth]);
+
+	//MARK: - 두께 설정
+	useEffect(() => {
+		if (canvas) {
+			canvas.freeDrawingBrush.width = lineWidth;
+		}
+	}, [lineWidth, canvas]);
 
 	const clearCanvas = useCallback(() => {
-		canvas.clear();
-		canvas.backgroundColor = bgColor.current;
-	}, [canvas]);
-
-	const downloadCanvas = useCallback(() => { }, []);
-
-	//MARK: - 그리기/선택 모드 구분
-	const setDrawMode = useCallback(() => {
-		canvas.isDrawingMode = true;
-		canvas.selection = false;
-		canvas.renderAll();
-		canvas.forEachObject((obj) => (obj.selectable = false));
-	}, [canvas]);
-
-	const setSelectMode = useCallback(() => {
-		canvas.isDrawingMode = false;
-		canvas.selection = true;
-		canvas.forEachObject((obj) => (obj.selectable = true));
-		canvas.renderAll();
-	}, [canvas]);
-
-
-	//MARK: - Line 두께 설정
-	const changeLightWeight = useCallback(() => {
 		if (canvas) {
-			const newWidth = 2;
-			canvas.freeDrawingBrush.width = newWidth;
+			canvas.clear();
+			canvas.setBackgroundColor("#FFFFFF", canvas.renderAll.bind(canvas));
 		}
 	}, [canvas]);
 
-	const changeMediumWeight = useCallback(() => {
+	//MARK: - 색상 설정
+	const changeBrushColor = useCallback(
+		(color) => {
+			const selectedColor = color.hex;
+			setBrushColor(selectedColor);
+			if (canvas) {
+				canvas.freeDrawingBrush.color = selectedColor;
+				canvas.isDrawingMode = true;
+				setActiveTool("draw");
+			}
+		},
+		[canvas]);
+
+	const toggleColorPicker = useCallback(() => {
+		setIsColorPickerVisible((prev) => !prev);
+	}, []);
+
+	//MARK: - 객체 삭제
+	const deleteSelectedObjects = useCallback(() => {
 		if (canvas) {
-			const newWidth = 6;
-			canvas.freeDrawingBrush.width = newWidth;
+			const activeObjects = canvas.getActiveObjects();
+			activeObjects.forEach((object) => {
+				canvas.remove(object);
+			});
+			canvas.discardActiveObject();
+			canvas.renderAll();
 		}
 	}, [canvas]);
 
-	const changeBoldWeight = useCallback(() => {
-		if (canvas) {
-			const newWidth = 10;
-			canvas.freeDrawingBrush.width = newWidth;
-		}
-	}, [canvas]);
+	//MARK: - 레이아웃
+	const buttons = [
+		{ icon: "trash", onClick: clearCanvas },
+		{ icon: "edit", onClick: () => setActiveTool("draw") },
+		{ icon: "eraser", onClick: () => setActiveTool("erase") },
+		{ icon: "select", onClick: () => setActiveTool("select") },
+		{ icon: "delect", onClick: deleteSelectedObjects },
+		{ icon: "palette", onClick: toggleColorPicker },
+	];
 
-	//MARK: - Line 색상 설정
-	// const showColorPallete = useCallback(() => {
-	// 	setShowPicker((prev) => !prev);
-	// }, []);
-
-	const changeBrushColor = useCallback((color) => {
-		const selectedColor = color.hex;
-		setBrushColor(selectedColor);
-		if (canvas) {
-			canvas.freeDrawingBrush.color = selectedColor;
-		}
-	}, [canvas]);
+	const styles = {
+		colorPicker: {
+			position: "fixed",
+			top: "60px",
+			left: "1400px",
+			backgroundColor: "white",
+			zIndex: 10,
+			display: isColorPickerVisible ? "block" : "none",
+			padding: "10px",
+			border: "1px solid #ccc",
+			borderRadius: "8px",
+		},
+		sliderContainer: {
+			margin: "10px 0",
+			display: "flex",
+			alignItems: "center",
+		},
+		sliderLabel: {
+			marginRight: "10px",
+			fontWeight: "bold",
+		},
+		slider: {
+			width: "500px",
+		},
+	};
 
 	return (
 		<div>
-			<Button
-				icon="trash"
-				iconOnly
-				backgroundOpacity="opaque"
-				onClick={clearCanvas}
-			/>
-			<Button
-				icon="P"
-				iconOnly
-				backgroundOpacity="opaque"
-				onClick={setDrawMode}
-			/>
-			<Button
-				icon="S"
-				iconOnly
-				backgroundOpacity="opaque"
-				onClick={setSelectMode}
-			/>
-			<Button
-				icon="L"
-				iconOnly
-				backgroundOpacity="opaque"
-				onClick={changeLightWeight}
-			/>
-			<Button
-				icon="M"
-				iconOnly
-				backgroundOpacity="opaque"
-				onClick={changeMediumWeight}
-			/>
-			<Button
-				icon="B"
-				iconOnly
-				backgroundOpacity="opaque"
-				onClick={changeBoldWeight}
-			/>
-			<div style={{
-				position: "fixed",
-				top: "20px",
-				left: "1400px",
-				backgroundColor: "white",
-				zIndex: 10
-			}}>
-				<CirclePicker
-					color={brushColor}
-					onChangeComplete={changeBrushColor}
+			{buttons.map(({ icon, onClick }, index) => (
+				<Button
+					key={index}
+					icon={icon}
+					iconOnly
+					backgroundOpacity="opaque"
+					onClick={onClick}
 				/>
+			))}
+
+			<div style={styles.colorPicker}>
+				<CirclePicker color={brushColor} onChangeComplete={changeBrushColor} />
 			</div>
+
+			<div style={styles.sliderContainer}>
+				<label style={styles.sliderLabel}>두께바꾸기 시작</label>
+				<input
+					type="range"
+					min="1"
+					max="50"
+					step="5"
+					value={lineWidth}
+					// eslint-disable-next-line
+					onChange={(e) => setLineWidth(Number(e.target.value))}
+					style={styles.slider}
+				/>
+				<span>끝</span>
+			</div>
+
 			<canvas id="canvas" />
 		</div>
 	);
