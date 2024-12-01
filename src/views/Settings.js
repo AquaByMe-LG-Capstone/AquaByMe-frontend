@@ -1,11 +1,11 @@
 /* eslint-disable */
 import Button from '@enact/sandstone/Button';
-import {InputField} from '@enact/sandstone/Input';
+import { InputField } from '@enact/sandstone/Input';
 import axios from 'axios';
-import {useEffect, useState} from 'react';
+import { useEffect, useState } from 'react';
 import $L from '@enact/i18n/$L';
 
-const Account = () => {
+const Settings = () => {
 	const [state, setState] = useState({
 		users: [],
 		name: '',
@@ -15,7 +15,7 @@ const Account = () => {
 	const fetchUser = async () => {
 		try {
 			const response = await axios.get('/api/users');
-			setState({users: response.data});
+			setState({ users: response.data });
 			console.log('>>>>>> RESPONSE: ', response.data);
 		} catch (error) {
 			console.log(error);
@@ -23,7 +23,7 @@ const Account = () => {
 	};
 	const handleSubmit = () => {
 		axios
-			.post('/api/users', {name: state.name, email: state.email})
+			.post('/api/users', { name: state.name, email: state.email })
 			.then(response => {
 				setState(prevState => ({
 					users: [...prevState.users, response.data],
@@ -70,13 +70,13 @@ const Account = () => {
 			<InputField
 				type="text"
 				value={state.name}
-				onChange={e => setState(prev => ({...prev, name: e.value}))}
+				onChange={e => setState(prev => ({ ...prev, name: e.value }))}
 				placeholder="Name"
 			/>
 			<InputField
 				type="email"
 				value={state.email}
-				onChange={e => setState(prev => ({...prev, email: e.value}))}
+				onChange={e => setState(prev => ({ ...prev, email: e.value }))}
 				placeholder="Email"
 			/>
 			<Button onClick={handleSubmit} type="submit">
@@ -86,4 +86,4 @@ const Account = () => {
 	);
 };
 
-export default Account;
+export default Settings;
