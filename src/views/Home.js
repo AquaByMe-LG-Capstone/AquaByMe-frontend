@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { Shaders, Node, GLSL } from "gl-react";
 import { Surface } from "gl-react-dom";
+import Button from '@enact/sandstone/Button';
+import styles from "./Main.module.less";
 
 const shaders = Shaders.create({
 	aquarium: {
@@ -124,11 +126,63 @@ class Aquarium extends React.Component {
 }
 
 const Home = () => {
+	const containerRef = useRef(null);
+	const [isFullScreen, setIsFullScreen] = useState(false);
+
+	// 전체화면으로 전환하는 함수
+	const enterFullscreen = () => {
+		if (containerRef.current) {
+			if (containerRef.current.requestFullscreen) {
+				containerRef.current.requestFullscreen();
+			} else if (containerRef.current.webkitRequestFullscreen) {
+				containerRef.current.webkitRequestFullscreen();
+			} else if (containerRef.current.mozRequestFullScreen) {
+				containerRef.current.mozRequestFullScreen();
+			} else if (containerRef.current.msRequestFullscreen) {
+				containerRef.current.msRequestFullscreen();
+			}
+		}
+	};
+
+	// 전체화면을 종료하는 함수
+	const exitFullscreen = () => {
+		if (document.exitFullscreen) {
+			document.exitFullscreen();
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		}
+	};
+
+	// 전체 화면 토글 & isFullScreen state 업데이트
+	const toggleFullscreen = () => {
+		if (document.fullscreenElement) {
+			setIsFullScreen(false);
+			exitFullscreen();
+		} else {
+			setIsFullScreen(true);
+			enterFullscreen();
+		}
+	};
+
 	return (
 		<>
-			<Surface width={'50vw'} height={'87vh'}>
-				<Aquarium />
-			</Surface>
+			<div ref={containerRef}>
+				<Surface width={isFullScreen ? '100vw' : '80vw'} height={isFullScreen ? '100vh' : '87vh'}>
+					<Aquarium />
+				</Surface>
+				<Button
+					className={styles.fsButton}
+					backgroundOpacity="transparent"
+					size="small"
+					icon="fullscreen"
+					onClick={toggleFullscreen}
+				>
+				</Button>
+			</div>
 		</>
 	);
 };
