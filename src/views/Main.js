@@ -5,11 +5,12 @@ import Home from './Home';
 import Sketch from './Sketch';
 import Settings from './Settings';
 import Gallery from './Gallery';
+import styles from "./Main.module.less";
 
 const Main = props => {
 	return (
-		<Panel {...props} >
-			<Header title={$L('Aqua By Me')} />
+		<Panel {...props} className={styles.customPanelPadding} >
+			{/* <Header title={$L('Aqua By Me')} /> */}
 			<TabLayout>
 				<Tab
 					icon="home"
