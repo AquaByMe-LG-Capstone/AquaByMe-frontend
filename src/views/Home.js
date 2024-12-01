@@ -7,7 +7,7 @@ const shaders = Shaders.create({
 		frag: GLSL`
 		precision highp float;
 		varying vec2 uv;
-		uniform float u_daytime;
+		// uniform float u_daytime;
 		uniform float u_time;
 
 		// Color of bottom water
@@ -24,11 +24,12 @@ const shaders = Shaders.create({
 
 		// Returns sky color based on time
 		vec3 getSkyCol() {
+			float dayTime = mod(u_time / 60.0, 1.0);
 			// Smooth blend for each phase of the day
-			float morningToNoon = smoothstep(0.0, 0.25, u_daytime) * (1.0 - smoothstep(0.25, 0.5, u_daytime));
-			float noonToEvening = smoothstep(0.25, 0.5, u_daytime) * (1.0 - smoothstep(0.5, 0.75, u_daytime));
-			float eveningToNight = smoothstep(0.5, 0.75, u_daytime) * (1.0 - smoothstep(0.75, 1.0, u_daytime));
-			float nightToMorning = smoothstep(0.75, 1.0, u_daytime) * (1.0 - smoothstep(0.0, 0.25, u_daytime));
+			float morningToNoon = smoothstep(0.0, 0.25, dayTime) * (1.0 - smoothstep(0.25, 0.5, dayTime));
+			float noonToEvening = smoothstep(0.25, 0.5, dayTime) * (1.0 - smoothstep(0.5, 0.75, dayTime));
+			float eveningToNight = smoothstep(0.5, 0.75, dayTime) * (1.0 - smoothstep(0.75, 1.0, dayTime));
+			float nightToMorning = smoothstep(0.75, 1.0, dayTime) * (1.0 - smoothstep(0.0, 0.25, dayTime));
 
 			// Combine weights and interpolate colors
 			vec3 dayColor = morningCol * morningToNoon +
@@ -118,8 +119,8 @@ class Aquarium extends React.Component {
 
 	render() {
 		const { u_time } = this.state;
-		const { u_time_of_day } = getPortionedTime();
-		return <Node shader={shaders.aquarium} uniforms={{ u_time, u_time_of_day }} />;
+		// const { u_time_of_day } = getPortionedTime();
+		return <Node shader={shaders.aquarium} uniforms={{ u_time }} />;
 	}
 }
 
