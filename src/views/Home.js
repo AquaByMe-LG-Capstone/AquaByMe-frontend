@@ -68,7 +68,6 @@ const shaders = Shaders.create({
 			// Compute wave height at the current position
 			vec3 lookVec = vec3(0., 0.634, 0.);
 			float waveHeight = 0.;
-			float bobFactor = 0.08 * (cos(u_time * 0.2) + 1.);
 
 			for(int i = 0; i < waveCnt; i++) {
 				float offsetFactor = float(i);
@@ -76,7 +75,7 @@ const shaders = Shaders.create({
 				waveHeight += smoothstep(0.016, 0., abs(wave - uv2.y + 1.2 + 0.2 * offsetFactor));
 			}
 
-			color += 0.3 * waveHeight * vec3(0.1, 0.2, 0.4);
+			// color += 0.3 * waveHeight * vec3(0.1, 0.2, 0.4);
 			return color;
 		}
 
@@ -127,7 +126,7 @@ class Aquarium extends React.Component {
 const Home = () => {
 	return (
 		<>
-			<Surface width={'100vw'} height={'100vh'}>
+			<Surface width={'50vw'} height={'87vh'}>
 				<Aquarium />
 			</Surface>
 		</>
