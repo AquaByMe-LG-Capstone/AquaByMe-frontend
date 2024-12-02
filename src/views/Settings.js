@@ -15,7 +15,7 @@ const Settings = () => {
 			<Button onClick={getProcStat}>Process Status</Button>
 			<Button onClick={getUnitList}>Unit List</Button>
 			<h3> Currently logged in as: {getUserID()}</h3>
-			<Button>Logout</Button>
+			<Button icon="exit">Logout</Button>
 		</>
 	);
 };

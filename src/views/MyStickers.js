@@ -1,16 +1,15 @@
-// import { VirtualGridList } from '@enact/sandstone/VirtualList';
 import BodyText from '@enact/sandstone/BodyText';
-const Gallery = () => {
+const MyStickers = () => {
 
     return (
         <>
             <BodyText
                 size="large">
-                This will be the gallery page
+                This will be the MyStickers page
             </BodyText>
 
         </>
     );
 };
 
-export default Gallery;
+export default MyStickers;

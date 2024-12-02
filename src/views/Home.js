@@ -87,11 +87,11 @@ const shaders = Shaders.create({
 	}
 });
 
-function getPortionedTime() {
-	const today = new Date();
-	let hour = today.getHours() / 23;
-	return hour;
-}
+// function getPortionedTime() {
+// 	const today = new Date();
+// 	let hour = today.getHours() / 23;
+// 	return hour;
+// }
 
 class Aquarium extends React.Component {
 	constructor(props) {
