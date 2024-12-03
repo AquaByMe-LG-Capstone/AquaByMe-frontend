@@ -1,20 +1,42 @@
-import TabLayout, {Tab} from '@enact/sandstone/TabLayout';
-import {Header, Panel} from '@enact/sandstone/Panels';
+import TabLayout, { Tab } from '@enact/sandstone/TabLayout';
+import { Panel } from '@enact/sandstone/Panels';
 import $L from '@enact/i18n/$L';
 import Home from './Home';
 import Sketch from './Sketch';
-import Account from './Account';
+import Settings from './Settings';
+import Gallery from './Gallery';
+import MyStickers from './MyStickers';
+import styles from "./Main.module.less";
 
 const Main = props => {
 	return (
-		<Panel {...props}>
-			<Header title={$L('Aqua By Me')} />
+		<Panel {...props} className={styles.customPanelPadding} >
+			{/* <Header title={$L('Aqua By Me')} /> */}
 			<TabLayout>
-				<Tab title={$L('Home')}>
+				<Tab
+					icon="home"
+					title={$L('Home')}>
 					<Home />
 				</Tab>
-				<Tab title={$L('Sketch')}>
+				<Tab
+					icon="create"
+					title={$L('Sketch')}>
 					<Sketch />
+				</Tab>
+				<Tab
+					icon="samples"
+					title={$L('My Stickers')}>
+					<MyStickers />
+				</Tab>
+				<Tab
+					icon="network"
+					title={$L('Gallery')}>
+					<Gallery />
+				</Tab>
+				<Tab
+					icon="gear"
+					title={$L('Settings')}>
+					<Settings />
 				</Tab>
 			</TabLayout>
 		</Panel>
