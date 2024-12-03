@@ -65,7 +65,7 @@ const shaders = Shaders.create({
 
 			// calculate and add waves at the top
 			vec2 uv2 = uv * 2.0 - 1.0;
-			uv2.y *= uv.y / uv.x; // Correct for aspect ratio
+			uv2.y *= 1.24;
 
 			// Compute wave height at the current position
 			vec3 lookVec = vec3(0., 0.634, 0.);
@@ -77,7 +77,7 @@ const shaders = Shaders.create({
 				waveHeight += smoothstep(0.016, 0., abs(wave - uv2.y + 1.2 + 0.2 * offsetFactor));
 			}
 
-			// color += 0.3 * waveHeight * vec3(0.1, 0.2, 0.4);
+			color += 0.3 * waveHeight * vec3(0.1, 0.2, 0.4);
 			return color;
 		}
 
@@ -158,6 +158,7 @@ const Home = () => {
 	};
 
 	// 전체 화면 토글 & isFullScreen state 업데이트
+	/* eslint-disable react/jsx-no-bind */
 	const toggleFullscreen = () => {
 		if (document.fullscreenElement) {
 			setIsFullScreen(false);
@@ -180,8 +181,7 @@ const Home = () => {
 					size="small"
 					icon="fullscreen"
 					onClick={toggleFullscreen}
-				>
-				</Button>
+				/>
 			</div>
 		</>
 	);
