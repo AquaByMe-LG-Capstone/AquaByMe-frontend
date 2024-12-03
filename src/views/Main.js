@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import TabLayout, { Tab } from '@enact/sandstone/TabLayout';
 import { Panel } from '@enact/sandstone/Panels';
 import $L from '@enact/i18n/$L';
@@ -6,9 +7,21 @@ import Sketch from './Sketch';
 import Settings from './Settings';
 import Gallery from './Gallery';
 import MyStickers from './MyStickers';
+import Login from './Login';
 import styles from "./Main.module.less";
 
 const Main = props => {
+	const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+	const handleLogin = () => {
+		setIsLoggedIn(true); // Update the login state
+	};
+
+	if (!isLoggedIn) {
+		// Show the login page if not logged in
+		return <Login onLogin={handleLogin} />;
+	}
+
 	return (
 		<Panel {...props} className={styles.customPanelPadding} >
 			{/* <Header title={$L('Aqua By Me')} /> */}
