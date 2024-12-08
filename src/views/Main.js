@@ -21,10 +21,10 @@ const Main = props => {
 		setIsLoggedIn(false);
 	};
 
-	if (!isLoggedIn) {
-		// Show the login page if not logged in
-		return <Login onLogin={handleLogin} onLogout={handleLogout} />;
-	}
+	// if (!isLoggedIn) {
+	// 	// Show the login page if not logged in
+	// 	return <Login onLogin={handleLogin} onLogout={handleLogout} />;
+	// }
 
 	return (
 		<Panel {...props} className={styles.customPanelPadding} >
