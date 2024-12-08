@@ -1,6 +1,7 @@
 import { VirtualGridList } from '@enact/sandstone/VirtualList';
 import React, { useState, useCallback } from 'react';
 import BodyText from '@enact/sandstone/BodyText';
+import Button from '@enact/sandstone/Button';
 import useAuth from '../hooks/useAuth';
 import CONFIG from '../config';
 import axios from 'axios';
@@ -18,7 +19,7 @@ const MyStickers = () => {
             },
         })
             .then((resp) => {
-                console.log('Post drawing SVG successful:', resp.data);
+                console.log('Post drawing SVG successful:', resp.data, "🧑🏻‍💻");
                 setStickers(resp.data);
             })
             .catch((error) => {
@@ -38,7 +39,6 @@ const MyStickers = () => {
 
     const itemRenderer = ({ index, ...rest }) => {
         const sticker = stickers[index];
-        console.log(sticker)
 
         if (!sticker) {
             console.log("마이스티커가 없어요!\n")
@@ -48,7 +48,10 @@ const MyStickers = () => {
         // fields = ['id', 'svg', 'creator', 'created'] 
 
         const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(sticker.svg)}`;
-        console.log(svgDataUrl, "🤪")
+
+        // const buttons = [
+        //     { icon: "trash", onClick: clearCanvas },
+        // ];
 
         return (
             <div
@@ -93,12 +96,12 @@ const MyStickers = () => {
                         minWidth: 230,
                     }}
                     scrollMode="native"
-                    spacing={0}
+                    spacing={10}
                     verticalScrollbar="auto"
                 />
             ) : (
                 <BodyText size="small">
-                    스티커를 불러오는 중입니다...
+                    스티커를 그려보세요!
                 </BodyText>
             )}
         </>
