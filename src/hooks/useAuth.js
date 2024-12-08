@@ -16,7 +16,7 @@ const useAuth = () => {
         axios.post(url, data)
             .then((resp) => {
                 if (resp.status === 200) {
-                    window.localStorage.setItem("authToken", resp.data.token);
+                    window.localStorage.setItem('authToken', resp.data.token);
                     onLogin(resp.data.token); // Notify parent component
                 } else {
                     console.error('Log in failed!');
@@ -33,7 +33,7 @@ const useAuth = () => {
         axios.post(url, { token }) // Send token for logout if required
             .then((resp) => {
                 if (resp.status === 200) {
-                    setToken(null); // Clear the token
+                    window.localStorage.removeItem('authToken');
                     onLogout(); // Notify parent component
                 } else {
                     console.error('Unexpected error during logout.');
