@@ -4,7 +4,7 @@ import { Panel } from '@enact/sandstone/Panels';
 import $L from '@enact/i18n/$L';
 import Home from './Home';
 import Sketch from './Sketch';
-import Settings from './Settings';
+import Settings from './settings/Settings';
 import Gallery from './Gallery';
 import MyStickers from './MyStickers';
 import Login from './login/Login';
@@ -21,10 +21,10 @@ const Main = props => {
 		setIsLoggedIn(false);
 	};
 
-	if (!isLoggedIn) {
-		// Show the login page if not logged in
-		return <Login onLogin={handleLogin} onLogout={handleLogout} />;
-	}
+	// if (!isLoggedIn) {
+	// 	// Show the login page if not logged in
+	// 	return <Login onLogin={handleLogin} onLogout={handleLogout} />;
+	// }
 
 	return (
 		<Panel {...props} className={styles.customPanelPadding} >
