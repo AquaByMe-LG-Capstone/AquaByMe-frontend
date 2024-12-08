@@ -45,33 +45,27 @@ const Gallery = () => {
         } else {
             setSelectedIndex(indexPath);
         }
+    }
 
-        // const currentShows = stickers[indexPath].shows
-        // const currentId = stickers[indexPath].id
-        // const data = { shows: !currentShows };
-        // const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/gallery/${currentId}`;
+    const showToggle = () => {
+        const indexPath = selectedIndex
+        const currentId = stickers[indexPath].id
+        const currentShows = stickers[indexPath].shows
+        const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/gallery/${currentId}`;
 
-        // // setStickers((prevStickers) =>
-        // //     prevStickers.map((sticker, indexPath) =>
-        // //         index === id ? { ...sticker, shows: !sticker.shows } : sticker
-        // //     )
-        // // );
-
-        // console.log(url, "🙆🏻‍♀️", currentShows, "🙆🏻‍♀️", data,"🙆🏻‍♀️", authToken)
-        // if (currentShows) {
-        //     axios.put(url, {
-        //         headers: {
-        //             'Authorization': `Token ${authToken}`,
-        //             'Content-Type': 'application/json',
-        //         },
-        //         data: data,
-        //     })
-        //         .then((resp) => {
-        //             console.log(`Sticker ${currentId} updated successfully:`, resp.data);
-        //         })
-        //         .catch((error) => {
-        //             console.error(`Error updating sticker ${currentId}:`, error.message);
-        //         });
+        const data = { shows: !currentShows }
+        axios.put(url, data, {
+            headers: {
+                'Authorization': `Token ${authToken}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((resp) => {
+                console.log(`Sticker ${currentId} updated successfully:`, resp.data);
+            })
+            .catch((error) => {
+                console.error(`Error updating sticker ${currentId}:`, error.message);
+            });
     }
 
     const removeSticker = () => {
@@ -140,12 +134,12 @@ const Gallery = () => {
                     position: "sticky",
                     top: 0,
                     zIndex: 10,
-                    backgroundColor: "#ffffff",
+                    backgroundColor: "#00000",
                     padding: "10px",
                     display: "flex",
                     gap: "10px",
                     justifyContent: "flex-start",
-                    borderBottom: "1px solid #ccc", // 상단 버튼 구분선
+                    borderBottom: "1px solid #ccc",
                 }}
             >
                 {/* 개별 버튼 */}
@@ -154,6 +148,13 @@ const Gallery = () => {
                     iconOnly
                     backgroundOpacity="opaque"
                     onClick={removeSticker}
+                />
+
+                <Button
+                    icon="folderupper"
+                    iconOnly
+                    backgroundOpacity="opaque"
+                    onClick={showToggle}
                 />
             </div>
 
