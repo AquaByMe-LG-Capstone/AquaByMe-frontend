@@ -16,7 +16,7 @@ const useAuth = () => {
         axios.post(url, data)
             .then((resp) => {
                 if (resp.status === 200) {
-                    setToken(resp.data.token); // Save the token
+                    window.localStorage.setItem("authToken", resp.data.token);
                     onLogin(resp.data.token); // Notify parent component
                 } else {
                     console.error('Log in failed!');

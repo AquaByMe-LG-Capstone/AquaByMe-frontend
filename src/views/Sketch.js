@@ -2,9 +2,17 @@ import { useCallback, useState, useEffect, useRef } from 'react';
 import Button from '@enact/sandstone/Button';
 import { fabric } from 'fabric';
 import { CirclePicker } from 'react-color';
+import useAuth from '../hooks/useAuth';
+import CONFIG from '../config';
+import axios from 'axios';
+import { string } from 'prop-types';
 
 
 const Sketch = () => {
+	const {
+        token
+    } = useAuth();
+
 	const [canvas, setCanvas] = useState(null);
 	const [bgColor] = useState("#FEFFFF");
 
@@ -106,10 +114,29 @@ const Sketch = () => {
 	//MARK: - 업로드
 	const uploadDrawing = useCallback(() => {
 		if (canvas) {
-			const svgString = canvas.toSVG()
-			console.log(svgString)
+			const drawingSVG = canvas.toSVG()
+			const removeBackgroundSVG = drawingSVG.replace(/<rect[^>]*fill="[^"]+"[^>]*><\/rect>/g, '');
+			const stringFromSVG = removeBackgroundSVG.toString();
+			const authToken = window.localStorage.getItem('authToken');
+
+			const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/sticker/`;
+			const data = JSON.stringify({ svg: stringFromSVG });
+
+			axios.post(url, data, {
+				headers: {
+					'Authorization': `Token ${authToken}`,
+					'Content-Type': 'application/json',
+				},
+			})
+				.then((resp) => {
+					console.log('Post drawing SVG successful:', resp.data);
+				})
+				.catch((error) => {
+					console.error('Signup error:', error.message);
+				});
 		}
-	}, [canvas]);
+
+	}, [canvas, useAuth]);
 
 	//MARK: - 레이아웃
 	const buttons = [
@@ -150,6 +177,7 @@ const Sketch = () => {
 
 	return (
 		<div>
+		<p>Token: {token}</p>
 			{buttons.map(({ icon, onClick }, index) => (
 				<Button
 					key={index}
