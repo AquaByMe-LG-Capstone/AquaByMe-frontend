@@ -53,7 +53,7 @@ const Main = props => {
 				<Tab
 					icon="gear"
 					title={$L('Settings')}>
-					<Settings />
+					<Settings onLogout={handleLogout} />
 				</Tab>
 			</TabLayout>
 		</Panel>

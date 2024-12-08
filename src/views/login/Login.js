@@ -13,7 +13,7 @@ const Login = ({ onLogin, onLogout }) => {
         setUserState,
         handleLogin,
         handleLogout,
-    } = useAuth(); // Use the custom hook
+    } = useAuth();
 
     const [signupState, setSignupState] = useState({
         email: '',
@@ -27,6 +27,7 @@ const Login = ({ onLogin, onLogout }) => {
     const closeSignup = () => setisSignupVisible(false);
 
     const handleSignup = () => {
+
         const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/user/signup`;
         const data = { ...signupState };
 
