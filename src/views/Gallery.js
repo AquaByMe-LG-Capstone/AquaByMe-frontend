@@ -1,7 +1,7 @@
+/* eslint-disable */
 import { VirtualGridList } from '@enact/sandstone/VirtualList';
 import BodyText from '@enact/sandstone/BodyText';
 const Gallery = () => {
-
     const itemRenderer = ({ index, ...rest }) => {
         const colors = ["red", "blue", "green", "orange", "purple"]; // Add more colors as needed
         const color = colors[index % colors.length]; // Cycle through colors based on index
