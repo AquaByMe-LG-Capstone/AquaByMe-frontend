@@ -70,7 +70,7 @@ const Sketch = () => {
 	const clearCanvas = useCallback(() => {
 		if (canvas) {
 			canvas.clear();
-			canvas.setBackgroundColor("#FFFFFF", canvas.renderAll.bind(canvas));
+			canvas.setBackgroundColor("#FEFFFF", canvas.renderAll.bind(canvas));
 		}
 	}, [canvas]);
 
@@ -106,7 +106,8 @@ const Sketch = () => {
 	//MARK: - 업로드
 	const uploadDrawing = useCallback(() => {
 		if (canvas) {
-			
+			const svgString = canvas.toSVG()
+			console.log(svgString)
 		}
 	}, [canvas]);
 
