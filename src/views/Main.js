@@ -7,7 +7,7 @@ import Sketch from './Sketch';
 import Settings from './Settings';
 import Gallery from './Gallery';
 import MyStickers from './MyStickers';
-import Login from './Login';
+import Login from './login/Login';
 import styles from "./Main.module.less";
 
 const Main = props => {
@@ -17,9 +17,13 @@ const Main = props => {
 		setIsLoggedIn(true); // Update the login state
 	};
 
+	const handleLogout = () => {
+		setIsLoggedIn(false);
+	};
+
 	if (!isLoggedIn) {
 		// Show the login page if not logged in
-		return <Login onLogin={handleLogin} />;
+		return <Login onLogin={handleLogin} onLogout={handleLogout} />;
 	}
 
 	return (
@@ -49,7 +53,7 @@ const Main = props => {
 				<Tab
 					icon="gear"
 					title={$L('Settings')}>
-					<Settings />
+					<Settings onLogout={handleLogout} />
 				</Tab>
 			</TabLayout>
 		</Panel>
