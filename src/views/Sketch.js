@@ -6,14 +6,14 @@ import { CirclePicker } from 'react-color';
 
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
-	const [bgColor] = useState("#FFFFFF");
+	const [bgColor] = useState("#FEFFFF");
 
 	// 그리기/선택 모드 구분
 	const [activeTool, setActiveTool] = useState("draw");
 
 	// 브러쉬 초기 설정
 	const [lineWidth, setLineWidth] = useState(1);
-	const [brushColor, setBrushColor] = useState("#000000");
+	const [brushColor, setBrushColor] = useState("#00000");
 
 	// 팔레트 토클
 	const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
@@ -47,9 +47,10 @@ const Sketch = () => {
 				canvas.contextTop.globalCompositeOperation = "source-over";
 			} else if (activeTool === "erase") {
 				canvas.isDrawingMode = true;
-				canvas.freeDrawingBrush.color = "rgba(0,0,0,1)";
+				canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
+				canvas.freeDrawingBrush.color = "#FEFFFF";
 				canvas.freeDrawingBrush.width = lineWidth;
-				canvas.contextTop.globalCompositeOperation = "destination-out";
+				canvas.contextTop.globalCompositeOperation = "source-over";
 			} else {
 				canvas.isDrawingMode = false;
 				canvas.selection = activeTool === "select";
@@ -102,14 +103,22 @@ const Sketch = () => {
 		}
 	}, [canvas]);
 
+	//MARK: - 업로드
+	const uploadDrawing = useCallback(() => {
+		if (canvas) {
+			
+		}
+	}, [canvas]);
+
 	//MARK: - 레이아웃
 	const buttons = [
 		{ icon: "trash", onClick: clearCanvas },
 		{ icon: "edit", onClick: () => setActiveTool("draw") },
 		{ icon: "eraser", onClick: () => setActiveTool("erase") },
-		{ icon: "select", onClick: () => setActiveTool("select") },
-		{ icon: "delect", onClick: deleteSelectedObjects },
-		{ icon: "palette", onClick: toggleColorPicker },
+		{ icon: "movecursor", onClick: () => setActiveTool("select") },
+		{ icon: "closex", onClick: deleteSelectedObjects },
+		{ icon: "colorpicker", onClick: toggleColorPicker },
+		{ icon: "folderupper", onClick: uploadDrawing },
 	];
 
 	const styles = {
