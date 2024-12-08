@@ -7,7 +7,10 @@ import CONFIG from '../config';
 import axios from 'axios';
 
 const MyStickers = () => {
+    const authToken = window.localStorage.getItem('authToken');
+
     const [stickers, setStickers] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(null);
 
     const loadDrawing = useCallback(() => {
         const authToken = window.localStorage.getItem('authToken');
@@ -37,6 +40,25 @@ const MyStickers = () => {
         console.log("Updated stickers:", stickers);
     }, [stickers]);
 
+    const removeSticker = () => {
+        const indexPath = selectedIndex
+        const currentId = stickers[indexPath].id
+        const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/sticker/${currentId}`;
+
+        axios.delete(url, {
+            headers: {
+                'Authorization': `Token ${authToken}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((resp) => {
+                console.log(`Sticker ${currentId} sent successfully:`, resp.data);
+            })
+            .catch((error) => {
+                console.error(`Error sending sticker ${currentId}:`, error.message);
+            });
+    }
+
     const itemRenderer = ({ index, ...rest }) => {
         const sticker = stickers[index];
 
@@ -56,7 +78,9 @@ const MyStickers = () => {
         return (
             <div
                 {...rest}
+                onClick={() => setSelectedIndex(index)}
                 style={{
+                    position: "relative",
                     backgroundColor: "#f0f0f0",
                     height: "100%",
                     display: "flex",
@@ -64,7 +88,8 @@ const MyStickers = () => {
                     alignItems: "center",
                     color: "black",
                     fontSize: "16px",
-                    border: "1px solid #ccc",
+                    border: selectedIndex === index ? "7px solid #4caf50" : "1px solid #ccc",
+                    cursor: "pointer",
                 }}
             >
                 <img
@@ -81,6 +106,29 @@ const MyStickers = () => {
 
     return (
         <>
+        {/* 상단 버튼 컨테이너 */}
+        <div
+                style={{
+                    position: "sticky",
+                    top: 0,
+                    zIndex: 10,
+                    backgroundColor: "#00000",
+                    padding: "10px",
+                    display: "flex",
+                    gap: "10px",
+                    justifyContent: "flex-start",
+                    borderBottom: "1px solid #ccc",
+                }}
+            >
+                {/* 개별 버튼 */}
+                <Button
+                    icon="trash"
+                    iconOnly
+                    backgroundOpacity="opaque"
+                    onClick={removeSticker}
+                />
+            </div>
+
             <BodyText size="large">
                 내가 그린 스티커그림
             </BodyText>

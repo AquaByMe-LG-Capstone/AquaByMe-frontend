@@ -60,11 +60,11 @@ const Gallery = () => {
                 'Content-Type': 'application/json',
             },
         })
-            .then((resp) => {
-                console.log(`Sticker ${currentId} updated successfully:`, resp.data);
+            .then(() => {
+                console.log(`Sticker ${currentId} updated successfully:`);
             })
-            .catch((error) => {
-                console.error(`Error updating sticker ${currentId}:`, error.message);
+            .catch(() => {
+                console.error(`Error updating sticker ${currentId}:`);
             });
     }
 
@@ -81,6 +81,8 @@ const Gallery = () => {
         })
             .then((resp) => {
                 console.log(`Sticker ${currentId} sent successfully:`, resp.data);
+                const updatedStickers = stickers.filter((_, index) => index !== indexPath);
+                setStickers(updatedStickers);
             })
             .catch((error) => {
                 console.error(`Error sending sticker ${currentId}:`, error.message);
