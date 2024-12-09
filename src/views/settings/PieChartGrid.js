@@ -1,4 +1,5 @@
 import { ResponsivePie } from '@nivo/pie';
+import ChartCustomTheme from './ChartTheme';
 
 const PieChartGrid = ({ datasets }) => {
 
@@ -37,15 +38,8 @@ const PieChartGrid = ({ datasets }) => {
                                 from: 'color',
                                 modifiers: [['darker', 0.2]],
                             }}
-                            arcLinkLabelsSkipAngle={10}
-                            arcLinkLabelsTextColor="#333333"
-                            arcLinkLabelsThickness={2}
-                            arcLinkLabelsColor={{ from: 'color' }}
-                            arcLabelsSkipAngle={10}
-                            arcLabelsTextColor={{
-                                from: 'color',
-                                modifiers: [['darker', 2]],
-                            }}
+                            arcLinkLabelsSkipAngle={360}
+                            arcLabelsSkipAngle={30}
                             legends={[
                                 {
                                     anchor: 'bottom',
@@ -71,6 +65,7 @@ const PieChartGrid = ({ datasets }) => {
                                     ],
                                 },
                             ]}
+                            theme={ChartCustomTheme}
                         />
                     </div>
                 ))}

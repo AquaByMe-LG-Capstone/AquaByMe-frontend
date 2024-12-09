@@ -4,10 +4,7 @@ import { getProcStat, getUnitList } from '../../libs/services';
 import debugLog from '../../libs/log';
 import useAuth from '../../hooks/useAuth';
 import PieChartGrid from './PieChartGrid';
-
-
-const cpuSegment = ['User', 'Nice', 'System', 'Idle'];
-const labelsForCpu = ['Total Cpu', 'Cpu 0', 'Cpu 1', 'Cpu 2', 'Cpu 3'];
+import BarChart from './BarChart';
 
 const Settings = ({ onLogout }) => {
 	const {
@@ -60,8 +57,9 @@ const Settings = ({ onLogout }) => {
 				},
 				onSuccess: res => {
 					debugLog('GET_CONFIGS[S]', res);
-					setMemoryUsage([res.usable_memory, res.swapUsed]);
-					console.log(memoryUsage);
+					const memStats = [{ label: 'usable_memory', value: res.usable_memory }, { label: 'swapUsed', value: res.swapUsed }];
+					console.log(memStats);
+					setMemoryUsage(memStats);
 				},
 				onFailure: err => {
 					debugLog('GET_CONFIGS[F]', err);
@@ -103,7 +101,7 @@ const Settings = ({ onLogout }) => {
 				{/* Memory Status */}
 				<div>
 					<h3>Current Memory Status</h3>
-					{/* Add Memory Status Chart Here */}
+					<BarChart dataset={memoryUsage} />
 				</div>
 
 				{/* User Info and Logout */}
