@@ -62,6 +62,8 @@ const Gallery = () => {
         })
             .then(() => {
                 console.log(`Sticker ${currentId} updated successfully:`);
+                const updatedStickers = stickers.filter((_, index) => index !== indexPath);
+                setStickers(updatedStickers);
             })
             .catch(() => {
                 console.error(`Error updating sticker ${currentId}:`);
