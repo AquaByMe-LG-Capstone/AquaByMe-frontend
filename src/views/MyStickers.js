@@ -40,6 +40,28 @@ const MyStickers = () => {
         console.log("Updated stickers:", stickers);
     }, [stickers]);
 
+    const showToggle = () => {
+        const indexPath = selectedIndex
+        const currentId = stickers[indexPath].id
+        const currentShows = stickers[indexPath].shows
+        const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/sticker/${currentId}`;
+
+        const data = { shows: !currentShows }
+        axios.put(url, data, {
+            headers: {
+                'Authorization': `Token ${authToken}`,
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(() => {
+                console.log(`Sticker ${currentId} updated successfully:`);
+                //MARK: - 수정하는 로직 연결
+            })
+            .catch(() => {
+                console.error(`Error updating sticker ${currentId}:`);
+            });
+    }
+
     const removeSticker = () => {
         const indexPath = selectedIndex
         const currentId = stickers[indexPath].id
@@ -53,6 +75,8 @@ const MyStickers = () => {
         })
             .then((resp) => {
                 console.log(`Sticker ${currentId} sent successfully:`, resp.data);
+                const updatedStickers = stickers.filter((_, index) => index !== indexPath);
+                setStickers(updatedStickers);
             })
             .catch((error) => {
                 console.error(`Error sending sticker ${currentId}:`, error.message);
@@ -70,10 +94,6 @@ const MyStickers = () => {
         // fields = ['id', 'svg', 'creator', 'created'] 
 
         const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(sticker.svg)}`;
-
-        // const buttons = [
-        //     { icon: "trash", onClick: clearCanvas },
-        // ];
 
         return (
             <div
@@ -106,8 +126,8 @@ const MyStickers = () => {
 
     return (
         <>
-        {/* 상단 버튼 컨테이너 */}
-        <div
+            {/* 상단 버튼 컨테이너 */}
+            <div
                 style={{
                     position: "sticky",
                     top: 0,
@@ -126,6 +146,13 @@ const MyStickers = () => {
                     iconOnly
                     backgroundOpacity="opaque"
                     onClick={removeSticker}
+                />
+
+                <Button
+                    icon="folderupper"
+                    iconOnly
+                    backgroundOpacity="opaque"
+                    onClick={showToggle}
                 />
             </div>
 
