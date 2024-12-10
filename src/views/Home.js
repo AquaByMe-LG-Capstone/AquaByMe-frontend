@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useRef, useState } from "react";
 import { Shaders, Node, GLSL } from "gl-react";
 import { Surface } from "gl-react-dom";

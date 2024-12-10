@@ -4,7 +4,7 @@ import { Panel } from '@enact/sandstone/Panels';
 import $L from '@enact/i18n/$L';
 import Home from './Home';
 import Sketch from './Sketch';
-import Settings from './Settings';
+import Settings from './settings/Settings';
 import Gallery from './Gallery';
 import MyStickers from './MyStickers';
 import Login from './login/Login';
