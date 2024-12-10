@@ -1,18 +1,12 @@
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import Button from '@enact/sandstone/Button';
 import { fabric } from 'fabric';
 import { CirclePicker } from 'react-color';
 import useAuth from '../hooks/useAuth';
 import CONFIG from '../config';
 import axios from 'axios';
-import { string } from 'prop-types';
-
 
 const Sketch = () => {
-	const {
-        token
-    } = useAuth();
-
 	const [canvas, setCanvas] = useState(null);
 	const [bgColor] = useState("#FEFFFF");
 
@@ -130,6 +124,7 @@ const Sketch = () => {
 			})
 				.then((resp) => {
 					console.log('Post drawing SVG successful:', resp.data);
+					clearCanvas()
 				})
 				.catch((error) => {
 					console.error('Signup error:', error.message);
@@ -177,7 +172,6 @@ const Sketch = () => {
 
 	return (
 		<div>
-		<p>Token: {token}</p>
 			{buttons.map(({ icon, onClick }, index) => (
 				<Button
 					key={index}
