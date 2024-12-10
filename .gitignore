@@ -1,4 +1,5 @@
 ### react ###
+
 .DS_*
 *.log
 logs
@@ -17,3 +18,5 @@ coverage/
 
 *.ipk
 dist
+
+config.js
