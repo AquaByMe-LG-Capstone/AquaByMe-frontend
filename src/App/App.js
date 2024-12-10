@@ -29,6 +29,7 @@ const App = props => {
 			skinVariants={skinVariants}
 			onBack={handleBack}
 			onClose={handleClose}
+			style={{backgroundColor: '#FFFFFF'}}
 		>
 			<Main />
 		</Panels>

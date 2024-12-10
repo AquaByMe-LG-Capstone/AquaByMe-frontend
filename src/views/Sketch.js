@@ -5,10 +5,12 @@ import { CirclePicker } from 'react-color';
 import useAuth from '../hooks/useAuth';
 import CONFIG from '../config';
 import axios from 'axios';
+import canvasImage from "../assets/fishBowlCanvas.png";
+import titleImage from "../assets/LetsDraw.png";
 
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
-	const [bgColor] = useState("#FEFFFF");
+	const [bgColor] = useState("#00ff0000");
 
 	// 그리기/선택 모드 구분
 	const [activeTool, setActiveTool] = useState("draw");
@@ -23,9 +25,9 @@ const Sketch = () => {
 	useEffect(() => {
 		const initCanvas =
 			new fabric.Canvas('canvas', {
-				height: 780,
-				width: 1700,
-				backgroundColor: bgColor,
+				width: 1800,
+				height: 1200,
+				backgroundColor: 'transparent',
 				isDrawingMode: true,
 			});
 
@@ -33,6 +35,12 @@ const Sketch = () => {
 		initCanvas.freeDrawingBrush.width = lineWidth;
 		setCanvas(initCanvas);
 
+		fabric.Image.fromURL(canvasImage, (img) => {
+			img.scaleToWidth(initCanvas.width);
+			img.scaleToHeight(initCanvas.height);
+			img.selectable = false;
+			img.evented = false;
+		});
 		return () => {
 			initCanvas.dispose();
 		};
@@ -50,7 +58,7 @@ const Sketch = () => {
 			} else if (activeTool === "erase") {
 				canvas.isDrawingMode = true;
 				canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-				canvas.freeDrawingBrush.color = "#FEFFFF";
+				canvas.freeDrawingBrush.color = "rgba(0, 0, 0, 0)";
 				canvas.freeDrawingBrush.width = lineWidth;
 				canvas.contextTop.globalCompositeOperation = "source-over";
 			} else {
@@ -72,7 +80,7 @@ const Sketch = () => {
 	const clearCanvas = useCallback(() => {
 		if (canvas) {
 			canvas.clear();
-			canvas.setBackgroundColor("#FEFFFF", canvas.renderAll.bind(canvas));
+			canvas.setBackgroundColor("#00ff0000", canvas.renderAll.bind(canvas));
 		}
 	}, [canvas]);
 
@@ -140,68 +148,125 @@ const Sketch = () => {
 		{ icon: "eraser", onClick: () => setActiveTool("erase") },
 		{ icon: "movecursor", onClick: () => setActiveTool("select") },
 		{ icon: "closex", onClick: deleteSelectedObjects },
-		{ icon: "colorpicker", onClick: toggleColorPicker },
+		// { icon: "colorpicker", onClick: toggleColorPicker },
 		{ icon: "folderupper", onClick: uploadDrawing },
 	];
 
 	const styles = {
-		colorPicker: {
-			position: "fixed",
-			top: "60px",
-			left: "1400px",
-			backgroundColor: "white",
-			zIndex: 10,
-			display: isColorPickerVisible ? "block" : "none",
-			padding: "10px",
-			border: "1px solid #ccc",
-			borderRadius: "8px",
+		
+		container: {
+			display: "flex",
+			flexDirection: "column",
+			alignItems: "center",
+			width: "100%",
+			height: "100%",
+			backgroundColor: "#FFFFFF",
+		},
+		titleImage: {
+			marginTop: "0px",
+			maxWidth: "1500px",
+		},
+		controls: {
+			display: "flex",
+			flexDirection: "row",
+			alignItems: "center",
+			justifyContent: "center",
+			marginTop: "40px",
+			gap: "3px",
+		},
+		button: {
+			padding: "10px 10px",             // 버튼 내부 여백
+			width: "160px",               // 버튼 너비
+			height: "160px",              // 버튼 높이
+			borderRadius: "50%",         // 완벽한 원형 버튼
+			backgroundColor: "#FFE893",  // 배경색
+			color: "#FBB4A5",            // 텍스트 색상
+			border: "none",              // 테두리 없음
+			cursor: "pointer",           // 마우스를 올렸을 때 포인터 커서
+			display: "flex",             // 내용 정렬을 위해 flexbox 사용
+			justifyContent: "center",    // 아이콘을 수평 중앙 정렬
+			alignItems: "center",        // 아이콘을 수직 중앙 정렬
+			fontSize: "5px",            // 아이콘 크기 조정
+			overflow: "hidden",
 		},
 		sliderContainer: {
-			margin: "10px 0",
 			display: "flex",
+			flexDirection: "row",
 			alignItems: "center",
-		},
-		sliderLabel: {
-			marginRight: "10px",
-			fontWeight: "bold",
+			gap: "20px",
 		},
 		slider: {
 			width: "500px",
 		},
+		colorPicker: {
+			display: "inline-block",
+			zIndex: 10,
+		},
+		canvasWrapper: {
+			position: "relative",
+			width: "100%",
+			maxWidth: "1800px",
+			height: "1300px",
+			marginTop: "5px",
+		},
+		backgroundImage: {
+			position: "absolute",
+			top: "0",
+			left: "0",
+			width: "100%",
+			height: "100%",
+			zIndex: 1,
+		},
+		canvas: {
+			position: "absolute",
+			top: "0",
+			left: "0",
+			width: "100%",
+			height: "100%",
+			zIndex: 2,
+		},
 	};
 
 	return (
-		<div>
-			{buttons.map(({ icon, onClick }, index) => (
-				<Button
-					key={index}
-					icon={icon}
-					iconOnly
-					backgroundOpacity="opaque"
-					onClick={onClick}
-				/>
-			))}
+		<div style={styles.container}>
+			{/* 타이틀 이미지 */}
+			<img src={titleImage} alt="Title" style={styles.titleImage} />
 
-			<div style={styles.colorPicker}>
-				<CirclePicker color={brushColor} onChangeComplete={changeBrushColor} />
+			{/* 버튼과 슬라이더 영역 */}
+			<div style={styles.controls}>
+				{/* 버튼 */}
+				{buttons.map(({ icon, onClick }, index) => (
+					<Button
+						key={index}
+						icon={icon}
+						iconOnly
+						onClick={onClick}
+						style={styles.button}
+					/>
+				))}
+
+				{/* 슬라이더 */}
+				<div style={styles.sliderContainer}>
+					<input
+						type="range"
+						min="1"
+						max="50"
+						step="5"
+						value={lineWidth}
+						onChange={(e) => setLineWidth(Number(e.target.value))}
+						style={styles.slider}
+					/>
+					<div style={styles.colorPicker}>
+						<CirclePicker color={brushColor} onChangeComplete={changeBrushColor} />
+					</div>
+				</div>
 			</div>
 
-			<div style={styles.sliderContainer}>
-				<label style={styles.sliderLabel}>두께바꾸기 시작</label>
-				<input
-					type="range"
-					min="1"
-					max="50"
-					step="5"
-					value={lineWidth}
-					// eslint-disable-next-line
-					onChange={(e) => setLineWidth(Number(e.target.value))}
-					style={styles.slider}
-				/>
-				<span>끝</span>
+			{/* 캔버스 영역 */}
+			<div style={styles.canvasWrapper}>
+				<img src={canvasImage} alt="Canvas Background" style={styles.backgroundImage} />
+				<canvas id="canvas" style={styles.canvas} />
 			</div>
-
-			<canvas id="canvas" />
 		</div>
 	);
 };
