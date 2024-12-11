@@ -10,17 +10,21 @@ import titleImage from "../assets/LetsDraw.png";
 
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
-	const [bgColor] = useState("#00ff0000");
+
+	// Undo/Redo
+	const [state, setState] = useState([]); 
+	const [redoState, setRedoState] = useState([]);
+	const [currentStateIndex, setCurrentStateIndex] = useState(-1); 
 
 	// 그리기/선택 모드 구분
-	const [activeTool, setActiveTool] = useState("draw");
+	const [activeTool, setActiveTool] = useState("select");
 
 	// 브러쉬 초기 설정
 	const [lineWidth, setLineWidth] = useState(1);
 	const [brushColor, setBrushColor] = useState("#00000");
 
 	// 팔레트 토클
-	const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
+	// const [isColorPickerVisible, setIsColorPickerVisible] = useState(false);
 
 	useEffect(() => {
 		const initCanvas =
@@ -30,45 +34,23 @@ const Sketch = () => {
 				backgroundColor: 'transparent',
 				isDrawingMode: true,
 			});
-
-		initCanvas.freeDrawingBrush.color = brushColor;
-		initCanvas.freeDrawingBrush.width = lineWidth;
-		setCanvas(initCanvas);
-
+		
 		fabric.Image.fromURL(canvasImage, (img) => {
 			img.scaleToWidth(initCanvas.width);
 			img.scaleToHeight(initCanvas.height);
 			img.selectable = false;
 			img.evented = false;
 		});
+
+		setCanvas(initCanvas);
+		setState([initCanvas.toJSON()]);
+        setCurrentStateIndex(0);
+
 		return () => {
 			initCanvas.dispose();
 		};
 		// eslint-disable-next-line
 	}, []);
-
-	useEffect(() => {
-		if (canvas) {
-			if (activeTool === "draw") {
-				canvas.isDrawingMode = true;
-				canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-				canvas.freeDrawingBrush.color = brushColor;
-				canvas.freeDrawingBrush.width = lineWidth;
-				canvas.contextTop.globalCompositeOperation = "source-over";
-			} else if (activeTool === "erase") {
-				canvas.isDrawingMode = true;
-				canvas.freeDrawingBrush = new fabric.PencilBrush(canvas);
-				canvas.freeDrawingBrush.color = "rgba(0, 0, 0, 0)";
-				canvas.freeDrawingBrush.width = lineWidth;
-				canvas.contextTop.globalCompositeOperation = "source-over";
-			} else {
-				canvas.isDrawingMode = false;
-				canvas.selection = activeTool === "select";
-				canvas.forEachObject((obj) => (obj.selectable = activeTool === "select"));
-			}
-			canvas.renderAll();
-		}
-	}, [activeTool, canvas, brushColor, lineWidth]);
 
 	//MARK: - 두께 설정
 	useEffect(() => {
@@ -77,6 +59,72 @@ const Sketch = () => {
 		}
 	}, [lineWidth, canvas]);
 
+	// 캔버스 상태 저장
+	useEffect(() => {
+		if (canvas) {
+			const saveState = (event) => {
+                const currentState = canvas.toJSON();
+
+				if (activeTool === "draw") {
+					console.log("드로잉 작업 발생! Redo 상태 초기화");
+					setRedoState([]);
+				}
+
+				// Undo 이후 새로운 작업 O
+                if (currentStateIndex < state.length - 1) {
+                    const updatedState = [...state.slice(0, currentStateIndex + 1), currentState];
+                    setState(updatedState);
+                    setCurrentStateIndex(updatedState.length - 1);
+					console.log("UNDO 이후 새로운 작업")
+                } else {
+
+					// Undo 이후 새로운 작업 X
+                    const updatedState = [...state, currentState];
+                    setState(updatedState);
+                    setCurrentStateIndex(updatedState.length - 1);
+					console.log("UNDO 이후 암것도 안함")
+                }
+            };
+
+            canvas.on("object:added", saveState);
+            canvas.on("object:modified", saveState);
+            canvas.on("object:removed", saveState);
+
+            return () => {
+                canvas.off("object:added", saveState);
+                canvas.off("object:modified", saveState);
+                canvas.off("object:removed", saveState);
+            };
+        }
+    }, [canvas, state, currentStateIndex]);
+
+	// Undo 기능
+	const undo = () => {
+		if (currentStateIndex > 0) {
+			const previousState = state[currentStateIndex - 1];
+			setRedoState([state[currentStateIndex], ...redoState]);
+			canvas.loadFromJSON(previousState, () => {
+				canvas.renderAll();
+				setCurrentStateIndex(currentStateIndex - 1);
+			});
+		}
+	};
+
+	// Redo 기능
+	const redo = () => {
+        if (redoState.length > 0) {
+            const nextState = redoState[0];
+            setRedoState(redoState.slice(1));
+            setState([...state, nextState]);
+            setCurrentStateIndex(currentStateIndex + 1);
+
+            canvas.loadFromJSON(nextState, () => {
+                canvas.renderAll();
+            });
+        }
+    };
+
+	//MARK: - Trash 기능 설정
 	const clearCanvas = useCallback(() => {
 		if (canvas) {
 			canvas.clear();
@@ -97,9 +145,9 @@ const Sketch = () => {
 		},
 		[canvas]);
 
-	const toggleColorPicker = useCallback(() => {
-		setIsColorPickerVisible((prev) => !prev);
-	}, []);
+	// const toggleColorPicker = useCallback(() => {
+	// 	setIsColorPickerVisible((prev) => !prev);
+	// }, []);
 
 	//MARK: - 객체 삭제
 	const deleteSelectedObjects = useCallback(() => {
@@ -150,6 +198,8 @@ const Sketch = () => {
 		{ icon: "closex", onClick: deleteSelectedObjects },
 		// { icon: "colorpicker", onClick: toggleColorPicker },
 		{ icon: "folderupper", onClick: uploadDrawing },
+		{ icon: "undo", onClick: undo },
+		{ icon: "redo", onClick: redo },
 	];
 
 	const styles = {

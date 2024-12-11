@@ -2,16 +2,16 @@ import { VirtualGridList } from '@enact/sandstone/VirtualList';
 import React, { useState, useCallback } from 'react';
 import BodyText from '@enact/sandstone/BodyText';
 import Button from '@enact/sandstone/Button';
-import useAuth from '../hooks/useAuth';
-import CONFIG from '../config';
+import CONFIG from '../../config';
 import axios from 'axios';
-import titleImage from "../assets/myart.png";
+import titleImage from "../../assets/myart.png";
+import styles from "../style/ButtonStyle.module.less";
 
 const MyStickers = () => {
     const authToken = window.localStorage.getItem('authToken');
 
     const [stickers, setStickers] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState([]);
 
     const loadDrawing = useCallback(() => {
         const authToken = window.localStorage.getItem('authToken');
@@ -41,6 +41,16 @@ const MyStickers = () => {
         console.log("Updated stickers:", stickers);
     }, [stickers]);
 
+    const toggleSelection = (index) => {
+        setSelectedIndex((prevIndexes) => {
+            if (prevIndexes.includes(index)) {
+                return prevIndexes.filter((i) => i !== index);
+            } else {
+                return [...prevIndexes, index];
+            }
+        });
+    };
+
     const showToggle = () => {
         const indexPath = selectedIndex
         const currentId = stickers[indexPath].id
@@ -64,25 +74,29 @@ const MyStickers = () => {
     }
 
     const removeSticker = () => {
-        const indexPath = selectedIndex
-        const currentId = stickers[indexPath].id
-        const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/sticker/${currentId}`;
+        const updatedStickers = [...stickers];
 
-        axios.delete(url, {
-            headers: {
-                'Authorization': `Token ${authToken}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((resp) => {
-                console.log(`Sticker ${currentId} sent successfully:`, resp.data);
-                const updatedStickers = stickers.filter((_, index) => index !== indexPath);
-                setStickers(updatedStickers);
+        selectedIndex.forEach((index) => {
+            const currentId = stickers[index].id;
+            const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/sticker/${currentId}`;
+
+            axios.delete(url, {
+                headers: {
+                    'Authorization': `Token ${authToken}`,
+                    'Content-Type': 'application/json',
+                },
             })
-            .catch((error) => {
-                console.error(`Error sending sticker ${currentId}:`, error.message);
-            });
-    }
+                .then((resp) => {
+                })
+                .catch((error) => {
+                    console.error(`Error sending sticker ${currentId}:`, error.message);
+                });
+        });
+
+        const remainingStickers = updatedStickers.filter((_, index) => !selectedIndex.includes(index));
+        setStickers(remainingStickers);
+        setSelectedIndex([]);
+    };
 
     const itemRenderer = ({ index, ...rest }) => {
         const sticker = stickers[index];
@@ -99,18 +113,22 @@ const MyStickers = () => {
         return (
             <div
                 {...rest}
-                onClick={() => setSelectedIndex(index)}
+                onClick={() => toggleSelection(index)}
                 style={{
+                    padding: "0px",
                     position: "relative",
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "#EFF6FF",
                     height: "100%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     color: "black",
-                    fontSize: "16px",
-                    border: selectedIndex === index ? "7px solid #4caf50" : "1px solid #ccc",
+                    fontSize: "30px",
+                    marginBottom: "100px",
+                    borderRadius: "50%",
+                    border: selectedIndex.includes(index) ? "7px solid #ff7bbf" : "1px solid #ccc",
                     cursor: "pointer",
+                    overflow: "hidden",
                 }}
             >
                 <img
@@ -139,7 +157,7 @@ const MyStickers = () => {
             >
                 <img src={titleImage} alt="Title" style={{ maxWidth: "1500px" }} />
             </div>
-    
+
             {/* 버튼과 그리드 리스트 컨테이너 */}
             <div
                 style={{
@@ -183,9 +201,10 @@ const MyStickers = () => {
                             alignItems: "center",
                             fontSize: "5px",
                             overflow: "hidden",
+                            transition: "none",
                         }}
                     />
-    
+
                     <Button
                         icon="folderupper"
                         iconOnly
@@ -204,10 +223,11 @@ const MyStickers = () => {
                             alignItems: "center",
                             fontSize: "5px",
                             overflow: "hidden",
+                            transition: "none",
                         }}
                     />
                 </div>
-    
+
                 {/* 스티커 리스트 */}
                 {stickers.length > 0 ? (
                     <VirtualGridList
@@ -215,11 +235,11 @@ const MyStickers = () => {
                         direction="vertical"
                         itemRenderer={itemRenderer}
                         itemSize={{
-                            minHeight: 250,
-                            minWidth: 280,
+                            minHeight: 300,
+                            minWidth: 300,
                         }}
                         scrollMode="native"
-                        spacing={10}
+                        spacing={30}
                         style={{
                             width: "80%",
                         }}

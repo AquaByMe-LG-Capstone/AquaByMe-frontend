@@ -6,7 +6,7 @@ import Home from './Home';
 import Sketch from './Sketch';
 import Settings from './settings/Settings';
 import Gallery from './Gallery';
-import MyStickers from './MyStickers';
+import MyStickers from './myArt/MyStickers';
 import Login from './login/Login';
 import styles from "./Main.module.less";
 

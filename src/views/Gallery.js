@@ -10,7 +10,7 @@ const Gallery = () => {
     const authToken = window.localStorage.getItem('authToken');
 
     const [stickers, setStickers] = useState([]);
-    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [selectedIndex, setSelectedIndex] = useState([]);
 
     const loadDrawing = useCallback(() => {
         const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/gallery/`;
@@ -39,14 +39,15 @@ const Gallery = () => {
         console.log("Updated stickers:", stickers);
     }, [stickers]);
 
-    const itemSelect = (indexPath) => {
-        const authToken = window.localStorage.getItem('authToken');
-        if (indexPath == selectedIndex) {
-            setSelectedIndex();
-        } else {
-            setSelectedIndex(indexPath);
-        }
-    }
+    const toggleSelection = (index) => {
+        setSelectedIndex((prevIndexes) => {
+            if (prevIndexes.includes(index)) {
+                return prevIndexes.filter((i) => i !== index);
+            } else {
+                return [...prevIndexes, index];
+            }
+        });
+    };
 
     const showToggle = () => {
         const indexPath = selectedIndex
@@ -72,25 +73,30 @@ const Gallery = () => {
     }
 
     const removeSticker = () => {
-        const indexPath = selectedIndex
-        const currentId = stickers[indexPath].id
-        const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/gallery/${currentId}`;
+        const updatedStickers = [...stickers];
 
-        axios.delete(url, {
-            headers: {
-                'Authorization': `Token ${authToken}`,
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((resp) => {
-                console.log(`Sticker ${currentId} sent successfully:`, resp.data);
-                const updatedStickers = stickers.filter((_, index) => index !== indexPath);
-                setStickers(updatedStickers);
+        selectedIndex.forEach((index) => {
+            const currentId = stickers[index].id;
+            const url = `http://${CONFIG.ipAddress}:${CONFIG.port}/gallery/${currentId}`;
+
+            axios.delete(url, {
+                headers: {
+                    'Authorization': `Token ${authToken}`,
+                    'Content-Type': 'application/json',
+                },
             })
-            .catch((error) => {
-                console.error(`Error sending sticker ${currentId}:`, error.message);
-            });
-    }
+                .then(() => {
+                    console.log(`Sticker ${currentId} deleted successfully.`);
+                })
+                .catch((error) => {
+                    console.error(`Error deleting sticker ${currentId}:`, error.message);
+                });
+        });
+
+        const remainingStickers = updatedStickers.filter((_, index) => !selectedIndex.includes(index));
+        setStickers(remainingStickers);
+        setSelectedIndex([]);
+    };
 
     const itemRenderer = ({ index, ...rest }) => {
         const sticker = stickers[index]?.sticker;
@@ -104,19 +110,22 @@ const Gallery = () => {
         return (
             <div
                 {...rest}
-                onClick={() => setSelectedIndex(index)}
+                onClick={() => toggleSelection(index)}
                 style={{
-                    padding: "10px",
+                    padding: "0px",
                     position: "relative",
-                    backgroundColor: "#f0f0f0",
+                    backgroundColor: "#EFF6FF",
                     height: "100%",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
                     color: "black",
                     fontSize: "30px",
-                    border: selectedIndex === index ? "7px solid #4caf50" : "1px solid #ccc",
+                    marginBottom: "100px",
+                    borderRadius: "50%",
+                    border: selectedIndex.includes(index) ? "7px solid #ff7bbf" : "1px solid #ccc",
                     cursor: "pointer",
+                    overflow: "hidden",
                 }}
             >
                 {/* 스티커 이미지 */}
@@ -146,7 +155,7 @@ const Gallery = () => {
             >
                 <img src={titleImage} alt="Title" style={{ maxWidth: "1500px" }} />
             </div>
-    
+
             {/* 버튼과 그리드 리스트 컨테이너 */}
             <div
                 style={{
@@ -192,7 +201,7 @@ const Gallery = () => {
                             overflow: "hidden",
                         }}
                     />
-    
+
                     <Button
                         icon="folderupper"
                         iconOnly
@@ -214,7 +223,7 @@ const Gallery = () => {
                         }}
                     />
                 </div>
-    
+
                 {/* 스티커 리스트 */}
                 {stickers.length > 0 ? (
                     <VirtualGridList
@@ -222,11 +231,11 @@ const Gallery = () => {
                         direction="vertical"
                         itemRenderer={itemRenderer}
                         itemSize={{
-                            minHeight: 250,
-                            minWidth: 280,
+                            minHeight: 300,
+                            minWidth: 300,
                         }}
                         scrollMode="native"
-                        spacing={10}
+                        spacing={30}
                         style={{
                             width: "80%",
                         }}
