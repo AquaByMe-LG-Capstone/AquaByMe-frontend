@@ -5,8 +5,8 @@ import $L from '@enact/i18n/$L';
 import Home from './Home';
 import Sketch from './Sketch';
 import Settings from './settings/Settings';
-import Gallery from './Gallery';
-import MyStickers from './MyStickers';
+import Gallery from './Gallery/Gallery';
+import MyStickers from './myArt/MyStickers';
 import Login from './login/Login';
 import styles from "./Main.module.less";
 
@@ -21,15 +21,14 @@ const Main = props => {
 		setIsLoggedIn(false);
 	};
 
-	if (!isLoggedIn) {
-		// Show the login page if not logged in
-		return <Login onLogin={handleLogin} onLogout={handleLogout} />;
-	}
+	// if (!isLoggedIn) {
+	// 	// Show the login page if not logged in
+	// 	return <Login onLogin={handleLogin} onLogout={handleLogout} />;
+	// }
 
 	return (
-		<Panel {...props} className={styles.customPanelPadding} >
-			{/* <Header title={$L('Aqua By Me')} /> */}
-			<TabLayout>
+		<div className={styles.surfaceContainer}>
+			<TabLayout className={styles.fixedTabBar}>
 				<Tab
 					icon="home"
 					title={$L('Home')}>
@@ -56,7 +55,10 @@ const Main = props => {
 					<Settings onLogout={handleLogout} />
 				</Tab>
 			</TabLayout>
-		</Panel>
+			<Panel {...props} className={styles.customPanelPadding}>
+				{/* 메인 컨텐츠 */}
+			</Panel>
+		</div>
 	);
 };
 export default Main;
