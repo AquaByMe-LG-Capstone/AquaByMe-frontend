@@ -262,7 +262,7 @@ const Gallery = () => {
                     />
 
                     <Button
-                        icon="folderupper"
+                        icon="check"
                         iconOnly
                         onClick={showToggle}
                         style={{
@@ -288,14 +288,13 @@ const Gallery = () => {
                         width: "90%",
                         height: "40%",
                         marginBottom: "0px",
-                        // overflow: "auto",
                     }}
                 >
                     <div
                         style={{
                             textAlign: "left",
                             color: "#cccccc",
-                            marginBottom: "10px",
+                            marginBottom: "0px",
                             fontFamily: "HakgyoansimDunggeunmiso, sans-serif",
                         }}
                     >
@@ -336,8 +335,8 @@ const Gallery = () => {
                         style={{
                             textAlign: "left",
                             color: "#cccccc",
-                            marginTop: "10px",
-                            marginBottom: "10px",
+                            marginTop: "30px",
+                            marginBottom: "0px",
                             fontFamily: "HakgyoansimDunggeunmiso, sans-serif",
                         }}
                     >
