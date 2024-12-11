@@ -278,25 +278,79 @@ const Sketch = () => {
 	};
 
 	return (
-		<div style={styles.container}>
+		<div
+			style={{
+				display: "flex",
+				flexDirection: "column",
+				justifyContent: "space-between", // 위와 아래 사이 공간 분배
+				alignItems: "center",
+				width: "100vw", // 전체 화면 너비
+				height: "100vh", // 전체 화면 높이
+				backgroundColor: "#FFFFFF",
+				margin: "0",
+				padding: "20px", // 전체 패딩
+				boxSizing: "border-box", // 패딩 포함
+			}}
+		>
 			{/* 타이틀 이미지 */}
-			<img src={titleImage} alt="Title" style={styles.titleImage} />
-
+			<img
+				src={titleImage}
+				alt="Title"
+				style={{
+					maxWidth: "90%", // 너비 조정
+					maxHeight: "150px", // 고정된 높이
+					marginBottom: "20px",
+				}}
+			/>
+	
 			{/* 버튼과 슬라이더 영역 */}
-			<div style={styles.controls}>
+			<div
+				style={{
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "center",
+					alignItems: "center",
+					width: "100%",
+					maxWidth: "1200px",
+					padding: "10px",
+				}}
+			>
 				{/* 버튼 */}
-				{buttons.map(({ icon, onClick }, index) => (
-					<Button
-						key={index}
-						icon={icon}
-						iconOnly
-						onClick={onClick}
-						style={styles.button}
-					/>
-				))}
-
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
+						gap: "20px", // 버튼 간격
+						marginBottom: "20px",
+					}}
+				>
+					{buttons.map(({ icon, onClick }, index) => (
+						<Button
+							key={index}
+							icon={icon}
+							iconOnly
+							onClick={onClick}
+							style={{
+								width: "100px",
+								height: "100px",
+								borderRadius: "50%",
+								backgroundColor: "#FFE893",
+								color: "#FBB4A5",
+								border: "none",
+								cursor: "pointer",
+								display: "flex",
+								justifyContent: "center",
+								alignItems: "center",
+								fontSize: "14px",
+								overflow: "hidden",
+							}}
+						/>
+					))}
+				</div>
+	
 				{/* 슬라이더 */}
-				<div style={styles.sliderContainer}>
+				<div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
 					<input
 						type="range"
 						min="1"
@@ -304,18 +358,52 @@ const Sketch = () => {
 						step="5"
 						value={lineWidth}
 						onChange={(e) => setLineWidth(Number(e.target.value))}
-						style={styles.slider}
+						style={{
+							width: "300px",
+							height: "5px",
+							borderRadius: "5px",
+						}}
 					/>
-					<div style={styles.colorPicker}>
+					<div>
 						<CirclePicker color={brushColor} onChangeComplete={changeBrushColor} />
 					</div>
 				</div>
 			</div>
-
+	
 			{/* 캔버스 영역 */}
-			<div style={styles.canvasWrapper}>
-				<img src={canvasImage} alt="Canvas Background" style={styles.backgroundImage} />
-				<canvas id="canvas" style={styles.canvas} />
+			<div
+				style={{
+					position: "relative",
+					width: "50%",
+					flex: "1", // 빈 공간 채우기
+					marginTop: "20px",
+					borderRadius: "8px",
+					backgroundColor: "#FFFFF",
+				}}
+			>
+				<img
+					src={canvasImage}
+					alt="Canvas Background"
+					style={{
+						position: "absolute",
+						top: "0",
+						left: "0",
+						width: "100%",
+						height: "95%",
+						zIndex: 1,
+					}}
+				/>
+				<canvas
+					id="canvas"
+					style={{
+						position: "absolute",
+						top: "0",
+						left: "0",
+						width: "100%",
+						height: "100%",
+						zIndex: 2,
+					}}
+				/>
 			</div>
 		</div>
 	);

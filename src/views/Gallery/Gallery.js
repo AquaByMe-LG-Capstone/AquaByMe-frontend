@@ -202,7 +202,11 @@ const Gallery = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor: "#FFFFFF",
+                    width: "1000px", // 고정된 너비
+                    height: "150px", // 고정된 높이
+                    margin: "0 auto", // 중앙 정렬
                     padding: "20px 0",
+                    marginBottom: "30px", // 아래 간격
                 }}
             >
                 <img src={titleImage} alt="Title" style={{ maxWidth: "1500px" }} />
