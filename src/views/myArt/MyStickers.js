@@ -153,12 +153,14 @@ const MyStickers = () => {
                     justifyContent: "center",
                     alignItems: "center",
                     backgroundColor: "#FFFFFF",
-                    padding: "20px 0",
+                    width: "100vw", // 전체 화면 너비
+                    height: "10vh", // 상단 높이
+                    padding: "10px 0",
                 }}
             >
-                <img src={titleImage} alt="Title" style={{ maxWidth: "1500px" }} />
+                <img src={titleImage} alt="Title" style={{ maxWidth: "90%" }} />
             </div>
-
+    
             {/* 버튼과 그리드 리스트 컨테이너 */}
             <div
                 style={{
@@ -166,11 +168,10 @@ const MyStickers = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "100%",
-                    height: "100%",
-                    padding: "10px",
+                    width: "100vw", // 전체 화면 너비
+                    height: "85vh", // 나머지 화면 높이
+                    overflow: "auto",
                     backgroundColor: "#FFFFFF",
-                    marginTop: "50px",
                 }}
             >
                 {/* 상단 버튼 컨테이너 */}
@@ -180,7 +181,7 @@ const MyStickers = () => {
                         gap: "10px",
                         justifyContent: "center", // 버튼 중앙 정렬
                         alignItems: "center",
-                        marginBottom: "50px", // 버튼과 그리드 사이 간격
+                        marginBottom: "20px", // 버튼과 그리드 사이 간격
                     }}
                 >
                     {/* 개별 버튼 */}
@@ -190,8 +191,8 @@ const MyStickers = () => {
                         onClick={removeSticker}
                         style={{
                             padding: "10px",
-                            width: "160px",
-                            height: "160px",
+                            width: "100px",
+                            height: "100px",
                             borderRadius: "50%",
                             backgroundColor: "#FFE893",
                             color: "#FBB4A5",
@@ -202,18 +203,17 @@ const MyStickers = () => {
                             alignItems: "center",
                             fontSize: "5px",
                             overflow: "hidden",
-                            transition: "none",
                         }}
                     />
-
+    
                     <Button
                         icon="folderupper"
                         iconOnly
                         onClick={showToggle}
                         style={{
                             padding: "10px",
-                            width: "160px",
-                            height: "160px",
+                            width: "100px",
+                            height: "100px",
                             borderRadius: "50%",
                             backgroundColor: "#FFE893",
                             color: "#FBB4A5",
@@ -224,21 +224,20 @@ const MyStickers = () => {
                             alignItems: "center",
                             fontSize: "5px",
                             overflow: "hidden",
-                            transition: "none",
                         }}
                     />
                 </div>
-
+    
                 {/* 구분선 */}
                 <div
                     style={{
-                        width: "80%",
+                        width: "90%",
                         height: "2px",
                         backgroundColor: "#ddd",
-                        margin: "20px 0",
+                        margin: "10px 0",
                     }}
                 ></div>
-
+    
                 {/* 스티커 리스트 */}
                 {stickers.length > 0 ? (
                     <VirtualGridList
@@ -252,13 +251,14 @@ const MyStickers = () => {
                         scrollMode="native"
                         spacing={30}
                         style={{
-                            width: "80%",
+                            width: "90%",
+                            height: "100%",
                         }}
                     />
                 ) : (
-                <BodyText size="small" style={{ textAlign: "center" }}>
-                    스티커를 그려보세요!
-                </BodyText>
+                    <BodyText size="small" style={{ textAlign: "center" }}>
+                        스티커를 그려보세요!
+                    </BodyText>
                 )}
             </div>
         </>
