@@ -76,16 +76,13 @@ const Home = () => {
 
 	// Actual aquarium (Fabric.js canvas)
 	const aquariumRef = useRef(null);
-	const fishArrayRef = useRef([]);
 
 	useEffect(() => {
-		// Initialize the Fabric.js canvas
 		const canvas = new fabric.Canvas(aquariumRef.current);
 
 		const setCanvasSize = () => {
 			const width = isFullScreen ? window.innerWidth : window.innerWidth * 0.8;
 			const height = isFullScreen ? window.innerHeight : window.innerHeight * 0.87;
-
 			aquariumRef.current.width = width;
 			aquariumRef.current.height = height;
 			canvas.setWidth(width);
@@ -95,7 +92,7 @@ const Home = () => {
 
 		setCanvasSize();
 
-		// Create the background gradient
+		// Create water background gradient
 		const waterColor = new fabric.Gradient({
 			type: 'linear',
 			coords: { x1: 0, y1: 0, x2: 0, y2: canvas.height },
@@ -108,58 +105,48 @@ const Home = () => {
 
 		canvas.setBackgroundColor(waterColor, canvas.renderAll.bind(canvas));
 
-		// Function to create and animate a fish using SVG
-		const createFish = (svgData) => {
-			const isLeft = Math.random() > 0.5; // 50% chance to start from left or right
+		// Function to create fish in a grid layout
+		const createFishGrid = () => {
+			const cols = 5; // Number of columns in the grid
+			const rows = Math.ceil(shownStickers.length / cols); // Number of rows based on the number of stickers
 
-			fabric.loadSVGFromString(svgData, (objects, options) => {
-				const fish = fabric.util.groupSVGElements(objects, options);
-				fish.set({
-					left: isLeft ? -50 : canvas.width + 50, // Position outside canvas initially
-					top: Math.random() * canvas.height, // Random vertical position
-					originX: 'center',
-					originY: 'center',
-					selectable: false,
-				});
+			let xOffset = 100; // Initial X position
+			let yOffset = 100; // Initial Y position
 
-				fish.scale(0.2);
+			shownStickers.forEach((sticker, index) => {
+				const svgData = sticker.sticker.svg;
+				fabric.loadSVGFromString(svgData, (objects, options) => {
+					const fish = fabric.util.groupSVGElements(objects, options);
+					fish.set({
+						left: xOffset,
+						top: yOffset,
+						originX: 'center',
+						originY: 'center',
+						selectable: false,
+					});
 
-				// Add the fish to canvas
-				canvas.add(fish);
-				fishArrayRef.current.push(fish); // Store reference for the fish
-				canvas.renderAll();
-			});
-		};
+					fish.scale(0.2);
+					canvas.add(fish);
+					canvas.renderAll();
 
-		// Function to animate the fish
-		const animateFish = () => {
-			fishArrayRef.current.forEach((fish) => {
-				const flip = Math.random() > 0.5;
-				const newX = Math.random() * (canvas.width / 8) + fish.left;
-				const newY = Math.random() * (canvas.height / 5) + fish.top;
+					// Update the offset for the next fish in the grid
+					xOffset += 300; // Move right for the next fish
 
-				fish.animate({ left: newX, top: newY }, {
-					duration: Math.random() * (4000 - 1000) + 1000, // Animation duration
-					onChange: canvas.renderAll.bind(canvas),
-					easing: fabric.util.ease.easeOutSine, // Smooth easing
-					onComplete: () => animateFish(), // Repeat the animation once complete
+					if ((index + 1) % cols === 0) {
+						// Move down to the next row after a full row is placed
+						xOffset = 300; // Reset X to start of the row
+						yOffset += 30; // Move down for the next row
+					}
 				});
 			});
 		};
 
-		// Once stickers are loaded, create the fish using SVG data
-		let len = shownStickers.length
-		if (len > 0) {
-			for (let i = 0; i < len; i++) {
-				const svgData = shownStickers[i].sticker.svg; // Select a random sticker's SVG data
-				// createFish(svgData);
-			}
-
-			// Start animating the fish
-			// animateFish();
+		// Create the fish in a grid layout after stickers are loaded
+		if (shownStickers.length > 0) {
+			createFishGrid();
 		}
 
-	}, [isFullScreen, shownStickers]); // Re-run when stickers or fullscreen state change
+	}, [isFullScreen, shownStickers]);
 
 	return (
 		<>
@@ -176,6 +163,5 @@ const Home = () => {
 		</>
 	);
 };
-
 
 export default Home;
