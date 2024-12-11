@@ -124,7 +124,8 @@ const MyStickers = () => {
                     alignItems: "center",
                     color: "black",
                     fontSize: "30px",
-                    marginBottom: "100px",
+                    marginTop: "100px",
+                    marginBottom: "50px",
                     borderRadius: "50%",
                     border: selectedIndex.includes(index) ? "7px solid #ff7bbf" : "1px solid #ccc",
                     cursor: "pointer",
@@ -228,6 +229,16 @@ const MyStickers = () => {
                     />
                 </div>
 
+                {/* 구분선 */}
+                <div
+                    style={{
+                        width: "80%",
+                        height: "2px",
+                        backgroundColor: "#ddd",
+                        margin: "20px 0",
+                    }}
+                ></div>
+
                 {/* 스티커 리스트 */}
                 {stickers.length > 0 ? (
                     <VirtualGridList
@@ -245,9 +256,9 @@ const MyStickers = () => {
                         }}
                     />
                 ) : (
-                    <BodyText size="small" style={{ textAlign: "center" }}>
-                        스티커를 그려보세요!
-                    </BodyText>
+                <BodyText size="small" style={{ textAlign: "center" }}>
+                    스티커를 그려보세요!
+                </BodyText>
                 )}
             </div>
         </>
