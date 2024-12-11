@@ -107,14 +107,14 @@ const Gallery = () => {
 
     const selectedItemRenderer = ({ index, ...rest }) => {
         const sticker = shownStickers[index];
-    
+
         if (!sticker) {
             return null;
         }
-    
+
         const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(sticker.sticker.svg)}`;
         const listKey = `shown-${index}`;
-    
+
         return (
             <div
                 {...rest}
@@ -148,17 +148,17 @@ const Gallery = () => {
             </div>
         );
     };
-    
+
     const waitingItemRenderer = ({ index, ...rest }) => {
         const sticker = waitingStickers[index];
-    
+
         if (!sticker) {
             return null;
         }
-    
+
         const svgDataUrl = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(sticker.sticker.svg)}`;
         const listKey = `waiting-${index}`;
-    
+
         return (
             <div
                 {...rest}
@@ -178,7 +178,6 @@ const Gallery = () => {
                     borderRadius: "50%",
                     border: selectedIndex.includes(listKey) ? "7px solid #ff7bbf" : "1px solid #ccc",
                     cursor: "pointer",
-                    overflow: "hidden",
                 }}
             >
                 <img
@@ -194,44 +193,52 @@ const Gallery = () => {
     };
 
     return (
-        <>
-            {/* 상단 타이틀 이미지 */}
-            <div
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "#FFFFFF",
+                margin: "0",
+                padding: "20px",
+                boxSizing: "border-box",
+            }}
+        >
+            {/* 타이틀 이미지 */}
+            <img
+                src={titleImage}
+                alt="Title"
                 style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#FFFFFF",
-                    width: "1000px", // 고정된 너비
-                    height: "150px", // 고정된 높이
-                    margin: "0 auto", // 중앙 정렬
-                    padding: "20px 0",
-                    marginBottom: "30px", // 아래 간격
+                    maxWidth: "100%",
+                    maxHeight: "250px",
+                    marginBottom: "30px",
                 }}
-            >
-                <img src={titleImage} alt="Title" style={{ maxWidth: "1500px" }} />
-            </div>
+            />
 
             <div
                 style={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent: "center",
+                    justifyContent: "flex-start",
                     alignItems: "center",
                     width: "100%",
-                    height: "100%",
-                    padding: "10px",
+                    height: "100vh",
+                    // overflow: "hidden",
                     backgroundColor: "#FFFFFF",
-                    marginTop: "50px",
+                    paddingBottom: "10px",
                 }}
             >
+                {/* 버튼 영역 */}
                 <div
                     style={{
                         display: "flex",
                         gap: "10px",
                         justifyContent: "center",
                         alignItems: "center",
-                        marginBottom: "50px",
+                        marginBottom: "20px",
                     }}
                 >
                     <Button
@@ -240,8 +247,8 @@ const Gallery = () => {
                         onClick={removeSticker}
                         style={{
                             padding: "10px",
-                            width: "160px",
-                            height: "160px",
+                            width: "70px",
+                            height: "70px",
                             borderRadius: "50%",
                             backgroundColor: "#FFE893",
                             color: "#FBB4A5",
@@ -250,8 +257,7 @@ const Gallery = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            fontSize: "5px",
-                            overflow: "hidden",
+                            fontSize: "14px",
                         }}
                     />
 
@@ -261,8 +267,8 @@ const Gallery = () => {
                         onClick={showToggle}
                         style={{
                             padding: "10px",
-                            width: "160px",
-                            height: "160px",
+                            width: "70px",
+                            height: "70px",
                             borderRadius: "50%",
                             backgroundColor: "#FFE893",
                             color: "#FBB4A5",
@@ -271,73 +277,96 @@ const Gallery = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            fontSize: "5px",
-                            overflow: "hidden",
+                            fontSize: "14px",
                         }}
                     />
                 </div>
 
-                <div style={{
-                    textAlign: "left",
-                    color: "#cccccc",
-                    marginTop: "50px",
-                    fontFamily: 'HakgyoansimDunggeunmiso, sans-serif'
-                }}>
-                    🐡 Swimming Friends 🐡
-                </div>
-
-                {shownStickers.length > 0 ? (
-                    <VirtualGridList
-                        dataSize={shownStickers.length}
-                        direction="vertical"
-                        itemRenderer={selectedItemRenderer}
-                        itemSize={{
-                            minHeight: 300,
-                            minWidth: 300,
-                        }}
-                        scrollMode="native"
-                        spacing={30}
+                {/* 첫 번째 그리드: Swimming Friends */}
+                <div
+                    style={{
+                        width: "90%",
+                        height: "40%",
+                        marginBottom: "0px",
+                        // overflow: "auto",
+                    }}
+                >
+                    <div
                         style={{
-                            width: "80%",
+                            textAlign: "left",
+                            color: "#cccccc",
+                            marginBottom: "10px",
+                            fontFamily: "HakgyoansimDunggeunmiso, sans-serif",
                         }}
-                    />
-                ) : (
-                    <BodyText size="small" style={{ textAlign: "center" }}>
-                        스티커를 그려보세요!
-                    </BodyText>
-                )}
-
-                <div style={{
-                    textAlign: 'left',
-                    color: '#cccccc',
-                    marginTop: "50px",
-                    fontFamily: 'HakgyoansimDunggeunmiso, sans-serif'
-                }}>
-                    🦑 Waiting Friends 🦑
+                    >
+                        🐡 Swimming Friends 🐡
+                    </div>
+                    {shownStickers.length > 0 ? (
+                        <VirtualGridList
+                            dataSize={shownStickers.length}
+                            direction="vertical"
+                            itemRenderer={selectedItemRenderer}
+                            itemSize={{
+                                minHeight: 150,
+                                minWidth: 150,
+                            }}
+                            scrollMode="native"
+                            spacing={15}
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        />
+                    ) : (
+                        <BodyText size="small" style={{ textAlign: "center" }}>
+                            스티커를 그려보세요!
+                        </BodyText>
+                    )}
                 </div>
 
-                {waitingStickers.length > 0 ? (
-                    <VirtualGridList
-                        dataSize={waitingStickers.length}
-                        direction="vertical"
-                        itemRenderer={waitingItemRenderer}
-                        itemSize={{
-                            minHeight: 300,
-                            minWidth: 300,
-                        }}
-                        scrollMode="native"
-                        spacing={30}
+                {/* 두 번째 그리드: Waiting Friends */}
+                <div
+                    style={{
+                        width: "90%",
+                        height: "40%",
+                        marginBottom: "0px",
+                    }}
+                >
+                    <div
                         style={{
-                            width: "80%",
+                            textAlign: "left",
+                            color: "#cccccc",
+                            marginTop: "10px",
+                            marginBottom: "10px",
+                            fontFamily: "HakgyoansimDunggeunmiso, sans-serif",
                         }}
-                    />
-                ) : (
-                    <BodyText size="small" style={{ textAlign: "center" }}>
-                        스티커를 그려보세요!
-                    </BodyText>
-                )}
+                    >
+                        🦑 Waiting Friends 🦑
+                    </div>
+                    {waitingStickers.length > 0 ? (
+                        <VirtualGridList
+                            dataSize={waitingStickers.length}
+                            direction="vertical"
+                            itemRenderer={waitingItemRenderer}
+                            itemSize={{
+                                minHeight: 150,
+                                minWidth: 150,
+                            }}
+                            scrollMode="native"
+                            spacing={15}
+                            style={{
+                                width: "100%",
+                                height: "100%",
+                            }}
+                        />
+                    ) : (
+                        <BodyText size="small" style={{ textAlign: "center" }}>
+                            스티커를 그려보세요!
+                        </BodyText>
+                    )}
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 

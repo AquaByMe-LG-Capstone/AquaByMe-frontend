@@ -125,7 +125,6 @@ const MyStickers = () => {
                     color: "black",
                     fontSize: "30px",
                     marginTop: "100px",
-                    marginBottom: "50px",
                     borderRadius: "50%",
                     border: selectedIndex.includes(index) ? "7px solid #ff7bbf" : "1px solid #ccc",
                     cursor: "pointer",
@@ -145,23 +144,31 @@ const MyStickers = () => {
     };
 
     return (
-        <>
-            {/* 상단 타이틀 이미지 */}
-            <div
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100vw",
+                height: "100vh",
+                backgroundColor: "#FFFFFF",
+                margin: "0",
+                padding: "20px",
+                boxSizing: "border-box",
+            }}
+        >
+            {/* 타이틀 이미지 */}
+            <img
+                src={titleImage}
+                alt="Title"
                 style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    backgroundColor: "#FFFFFF",
-                    width: "1200px", // 고정된 너비
-                    height: "200px", // 고정된 높이
-                    margin: "0 auto", // 중앙 정렬
-                    padding: "20px 0",
+                    maxWidth: "100%",
+                    maxHeight: "250px",
+                    marginBottom: "30px",
                 }}
-            >
-                <img src={titleImage} alt="Title" style={{ maxWidth: "100%" }} />
-            </div>
-    
+            />
+
             {/* 버튼과 그리드 리스트 컨테이너 */}
             <div
                 style={{
@@ -169,12 +176,11 @@ const MyStickers = () => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    width: "1200px", // 고정된 너비
-                    height: "800px", // 고정된 높이
+                    width: "1300px", // 고정된 너비
+                    height: "1000px", // 고정된 높이 줄임
                     overflow: "auto",
                     backgroundColor: "#FFFFFF",
                     margin: "20px auto", // 중앙 정렬
-                    border: "1px solid #ddd",
                     padding: "10px",
                 }}
             >
@@ -182,10 +188,10 @@ const MyStickers = () => {
                 <div
                     style={{
                         display: "flex",
-                        gap: "20px",
-                        justifyContent: "center", // 버튼 중앙 정렬
+                        gap: "15px", // 버튼 간 간격 줄임
+                        justifyContent: "center",
                         alignItems: "center",
-                        marginBottom: "30px", // 버튼과 리스트 사이 간격
+                        marginBottom: "10px", // 버튼과 리스트 사이 간격 줄임
                     }}
                 >
                     {/* 개별 버튼 */}
@@ -194,8 +200,8 @@ const MyStickers = () => {
                         iconOnly
                         onClick={removeSticker}
                         style={{
-                            width: "100px",
-                            height: "100px",
+                            width: "70px",
+                            height: "70px",
                             borderRadius: "50%",
                             backgroundColor: "#FFE893",
                             color: "#FBB4A5",
@@ -209,14 +215,14 @@ const MyStickers = () => {
                             transition: "none",
                         }}
                     />
-    
-                    <Button
-                        icon="folderupper"
+
+                    {/* <Button
+                        icon="check"
                         iconOnly
                         onClick={showToggle}
                         style={{
-                            width: "100px",
-                            height: "100px",
+                            width: "70px",
+                            height: "70px",
                             borderRadius: "50%",
                             backgroundColor: "#FFE893",
                             color: "#FBB4A5",
@@ -225,13 +231,13 @@ const MyStickers = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            fontSize: "14px",
+                            fontSize: "14px", // 폰트 크기 줄임
                             overflow: "hidden",
                             transition: "none",
                         }}
-                    />
+                    /> */}
                 </div>
-    
+
                 {/* 구분선 */}
                 <div
                     style={{
@@ -239,9 +245,10 @@ const MyStickers = () => {
                         height: "2px",
                         backgroundColor: "#ddd",
                         margin: "10px 0",
+                        marginBottom: "5px"
                     }}
                 ></div>
-    
+
                 {/* 스티커 리스트 */}
                 {stickers.length > 0 ? (
                     <VirtualGridList
@@ -249,11 +256,11 @@ const MyStickers = () => {
                         direction="vertical"
                         itemRenderer={itemRenderer}
                         itemSize={{
-                            minHeight: 200,
-                            minWidth: 200,
+                            minHeight: 150,
+                            minWidth: 150,
                         }}
                         scrollMode="native"
-                        spacing={20}
+                        spacing={15} // 간격 줄임
                         style={{
                             width: "100%",
                             height: "100%",
@@ -265,7 +272,7 @@ const MyStickers = () => {
                     </BodyText>
                 )}
             </div>
-        </>
+        </div>
     );
 };
 

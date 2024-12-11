@@ -152,11 +152,11 @@ const Home = () => {
 		if (len > 0) {
 			for (let i = 0; i < len; i++) {
 				const svgData = shownStickers[i].sticker.svg; // Select a random sticker's SVG data
-				createFish(svgData);
+				// createFish(svgData);
 			}
 
 			// Start animating the fish
-			animateFish();
+			// animateFish();
 		}
 
 	}, [isFullScreen, shownStickers]); // Re-run when stickers or fullscreen state change

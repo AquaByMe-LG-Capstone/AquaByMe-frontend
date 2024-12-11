@@ -21,31 +21,31 @@ const Main = props => {
 		setIsLoggedIn(false);
 	};
 
-	if (!isLoggedIn) {
-		// Show the login page if not logged in
-		return <Login onLogin={handleLogin} onLogout={handleLogout} />;
-	}
+	// if (!isLoggedIn) {
+	// 	// Show the login page if not logged in
+	// 	return <Login onLogin={handleLogin} onLogout={handleLogout} />;
+	// }
 
 	return (
 		<div className={styles.surfaceContainer}>
 			<TabLayout className={styles.fixedTabBar}>
 				<Tab
-					icon="home"
+					icon="picture"
 					title={$L('Home')}>
 					<Home />
 				</Tab>
 				<Tab
-					icon="create"
+					icon="pen"
 					title={$L('Sketch')}>
 					<Sketch />
 				</Tab>
 				<Tab
-					icon="samples"
+					icon="star"
 					title={$L('My Stickers')}>
 					<MyStickers />
 				</Tab>
 				<Tab
-					icon="network"
+					icon="stargroup"
 					title={$L('Gallery')}>
 					<Gallery />
 				</Tab>

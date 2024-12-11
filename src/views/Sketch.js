@@ -196,10 +196,9 @@ const Sketch = () => {
 		{ icon: "eraser", onClick: () => setActiveTool("erase") },
 		{ icon: "movecursor", onClick: () => setActiveTool("select") },
 		{ icon: "closex", onClick: deleteSelectedObjects },
-		// { icon: "colorpicker", onClick: toggleColorPicker },
-		{ icon: "folderupper", onClick: uploadDrawing },
-		{ icon: "undo", onClick: undo },
-		{ icon: "redo", onClick: redo },
+		{ icon: "check", onClick: uploadDrawing },
+		{ icon: "arrowhookleft", onClick: undo },
+		{ icon: "arrowhookright", onClick: redo },
 	];
 
 	const styles = {
@@ -282,14 +281,14 @@ const Sketch = () => {
 			style={{
 				display: "flex",
 				flexDirection: "column",
-				justifyContent: "space-between", // 위와 아래 사이 공간 분배
+				justifyContent: "space-between",
 				alignItems: "center",
-				width: "100vw", // 전체 화면 너비
-				height: "100vh", // 전체 화면 높이
+				width: "100vw",
+				height: "100vh",
 				backgroundColor: "#FFFFFF",
 				margin: "0",
-				padding: "20px", // 전체 패딩
-				boxSizing: "border-box", // 패딩 포함
+				padding: "20px",
+				boxSizing: "border-box",
 			}}
 		>
 			{/* 타이틀 이미지 */}
@@ -297,9 +296,9 @@ const Sketch = () => {
 				src={titleImage}
 				alt="Title"
 				style={{
-					maxWidth: "90%", // 너비 조정
-					maxHeight: "150px", // 고정된 높이
-					marginBottom: "20px",
+					maxWidth: "100%",
+					maxHeight: "250px", // 타이틀 크기 증가
+					marginBottom: "30px",
 				}}
 			/>
 	
@@ -307,12 +306,14 @@ const Sketch = () => {
 			<div
 				style={{
 					display: "flex",
-					flexDirection: "column",
-					justifyContent: "center",
+					flexDirection: "row", // 버튼과 슬라이더가 한 줄에 배치
+					justifyContent: "space-between",
 					alignItems: "center",
-					width: "100%",
+					width: "90%",
 					maxWidth: "1200px",
 					padding: "10px",
+					marginBottom: "10px",
+					gap: "20px",
 				}}
 			>
 				{/* 버튼 */}
@@ -321,8 +322,7 @@ const Sketch = () => {
 						display: "flex",
 						justifyContent: "center",
 						alignItems: "center",
-						gap: "20px", // 버튼 간격
-						marginBottom: "20px",
+						gap: "10px", // 버튼 간 간격
 					}}
 				>
 					{buttons.map(({ icon, onClick }, index) => (
@@ -332,25 +332,30 @@ const Sketch = () => {
 							iconOnly
 							onClick={onClick}
 							style={{
-								width: "100px",
-								height: "100px",
+								width: "70px", // 버튼 크기 줄임
+								height: "70px",
 								borderRadius: "50%",
 								backgroundColor: "#FFE893",
 								color: "#FBB4A5",
 								border: "none",
 								cursor: "pointer",
 								display: "flex",
-								justifyContent: "center",
 								alignItems: "center",
 								fontSize: "14px",
-								overflow: "hidden",
 							}}
 						/>
 					))}
 				</div>
 	
-				{/* 슬라이더 */}
-				<div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+				{/* 슬라이더와 팔레트 */}
+				<div
+					style={{
+						display: "flex",
+						flexDirection: "row",
+						alignItems: "center",
+						gap: "20px", // 슬라이더와 팔레트 간격
+					}}
+				>
 					<input
 						type="range"
 						min="1"
@@ -359,13 +364,16 @@ const Sketch = () => {
 						value={lineWidth}
 						onChange={(e) => setLineWidth(Number(e.target.value))}
 						style={{
-							width: "300px",
+							width: "180px", // 슬라이더 너비 조정
 							height: "5px",
 							borderRadius: "5px",
 						}}
 					/>
 					<div>
-						<CirclePicker color={brushColor} onChangeComplete={changeBrushColor} />
+						<CirclePicker
+							color={brushColor}
+							onChangeComplete={changeBrushColor}
+						/>
 					</div>
 				</div>
 			</div>
@@ -374,9 +382,9 @@ const Sketch = () => {
 			<div
 				style={{
 					position: "relative",
-					width: "50%",
-					flex: "1", // 빈 공간 채우기
-					marginTop: "20px",
+					width: "60%", // 캔버스 너비 증가
+					height: "70%", // 캔버스 높이 감소
+					marginTop: "10px",
 					borderRadius: "8px",
 					backgroundColor: "#FFFFF",
 				}}
@@ -389,7 +397,7 @@ const Sketch = () => {
 						top: "0",
 						left: "0",
 						width: "100%",
-						height: "95%",
+						height: "100%",
 						zIndex: 1,
 					}}
 				/>
