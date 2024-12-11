@@ -1,8 +1,8 @@
 /* eslint-disable */
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from '@enact/sandstone/Button';
-import styles from "./Main.module.less";
-import CONFIG from "../config";
+import styles from './Home.css'
+import CONFIG from "../../config";
 import axios from "axios";
 import { fabric } from 'fabric';
 

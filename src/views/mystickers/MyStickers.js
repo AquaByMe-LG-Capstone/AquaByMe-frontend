@@ -5,7 +5,6 @@ import Button from '@enact/sandstone/Button';
 import CONFIG from '../../config';
 import axios from 'axios';
 import titleImage from "../../assets/myart.png";
-import styles from "../style/ButtonStyle.module.less";
 
 const MyStickers = () => {
     const authToken = window.localStorage.getItem('authToken');

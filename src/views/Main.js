@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import TabLayout, { Tab } from '@enact/sandstone/TabLayout';
 import { Panel } from '@enact/sandstone/Panels';
 import $L from '@enact/i18n/$L';
-import Home from './Home';
-import Sketch from './Sketch';
+import Home from './home/Home';
+import Sketch from './sketch/Sketch';
 import Settings from './settings/Settings';
-import Gallery from './Gallery/Gallery';
-import MyStickers from './myArt/MyStickers';
+import Gallery from './gallery/Gallery';
+import MyStickers from './mystickers/MyStickers';
 import Login from './login/Login';
 import styles from "./Main.module.less";
 
@@ -21,10 +21,10 @@ const Main = props => {
 		setIsLoggedIn(false);
 	};
 
-	// if (!isLoggedIn) {
-	// 	// Show the login page if not logged in
-	// 	return <Login onLogin={handleLogin} onLogout={handleLogout} />;
-	// }
+	if (!isLoggedIn) {
+		// Show the login page if not logged in
+		return <Login onLogin={handleLogin} onLogout={handleLogout} />;
+	}
 
 	return (
 		<div className={styles.surfaceContainer}>

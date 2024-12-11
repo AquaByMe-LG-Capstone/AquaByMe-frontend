@@ -2,19 +2,19 @@ import { useCallback, useState, useEffect } from 'react';
 import Button from '@enact/sandstone/Button';
 import { fabric } from 'fabric';
 import { CirclePicker } from 'react-color';
-import useAuth from '../hooks/useAuth';
-import CONFIG from '../config';
+import useAuth from '../../hooks/useAuth';
+import CONFIG from '../../config';
 import axios from 'axios';
-import canvasImage from "../assets/fishBowlCanvas.png";
-import titleImage from "../assets/LetsDraw.png";
+import canvasImage from "../../assets/fishBowlCanvas.png";
+import titleImage from "../../assets/LetsDraw.png";
 
 const Sketch = () => {
 	const [canvas, setCanvas] = useState(null);
 
 	// Undo/Redo
-	const [state, setState] = useState([]); 
+	const [state, setState] = useState([]);
 	const [redoState, setRedoState] = useState([]);
-	const [currentStateIndex, setCurrentStateIndex] = useState(-1); 
+	const [currentStateIndex, setCurrentStateIndex] = useState(-1);
 
 	// 그리기/선택 모드 구분
 	const [activeTool, setActiveTool] = useState("select");
@@ -34,7 +34,7 @@ const Sketch = () => {
 				backgroundColor: 'transparent',
 				isDrawingMode: true,
 			});
-		
+
 		fabric.Image.fromURL(canvasImage, (img) => {
 			img.scaleToWidth(initCanvas.width);
 			img.scaleToHeight(initCanvas.height);
@@ -44,7 +44,7 @@ const Sketch = () => {
 
 		setCanvas(initCanvas);
 		setState([initCanvas.toJSON()]);
-        setCurrentStateIndex(0);
+		setCurrentStateIndex(0);
 
 		return () => {
 			initCanvas.dispose();
@@ -63,7 +63,7 @@ const Sketch = () => {
 	useEffect(() => {
 		if (canvas) {
 			const saveState = (event) => {
-                const currentState = canvas.toJSON();
+				const currentState = canvas.toJSON();
 
 				if (activeTool === "draw") {
 					console.log("드로잉 작업 발생! Redo 상태 초기화");
@@ -71,32 +71,32 @@ const Sketch = () => {
 				}
 
 				// Undo 이후 새로운 작업 O
-                if (currentStateIndex < state.length - 1) {
-                    const updatedState = [...state.slice(0, currentStateIndex + 1), currentState];
-                    setState(updatedState);
-                    setCurrentStateIndex(updatedState.length - 1);
+				if (currentStateIndex < state.length - 1) {
+					const updatedState = [...state.slice(0, currentStateIndex + 1), currentState];
+					setState(updatedState);
+					setCurrentStateIndex(updatedState.length - 1);
 					console.log("UNDO 이후 새로운 작업")
-                } else {
+				} else {
 
 					// Undo 이후 새로운 작업 X
-                    const updatedState = [...state, currentState];
-                    setState(updatedState);
-                    setCurrentStateIndex(updatedState.length - 1);
+					const updatedState = [...state, currentState];
+					setState(updatedState);
+					setCurrentStateIndex(updatedState.length - 1);
 					console.log("UNDO 이후 암것도 안함")
-                }
-            };
+				}
+			};
 
-            canvas.on("object:added", saveState);
-            canvas.on("object:modified", saveState);
-            canvas.on("object:removed", saveState);
+			canvas.on("object:added", saveState);
+			canvas.on("object:modified", saveState);
+			canvas.on("object:removed", saveState);
 
-            return () => {
-                canvas.off("object:added", saveState);
-                canvas.off("object:modified", saveState);
-                canvas.off("object:removed", saveState);
-            };
-        }
-    }, [canvas, state, currentStateIndex]);
+			return () => {
+				canvas.off("object:added", saveState);
+				canvas.off("object:modified", saveState);
+				canvas.off("object:removed", saveState);
+			};
+		}
+	}, [canvas, state, currentStateIndex]);
 
 	// Undo 기능
 	const undo = () => {
@@ -112,17 +112,17 @@ const Sketch = () => {
 
 	// Redo 기능
 	const redo = () => {
-        if (redoState.length > 0) {
-            const nextState = redoState[0];
-            setRedoState(redoState.slice(1));
-            setState([...state, nextState]);
-            setCurrentStateIndex(currentStateIndex + 1);
+		if (redoState.length > 0) {
+			const nextState = redoState[0];
+			setRedoState(redoState.slice(1));
+			setState([...state, nextState]);
+			setCurrentStateIndex(currentStateIndex + 1);
 
-            canvas.loadFromJSON(nextState, () => {
-                canvas.renderAll();
-            });
-        }
-    };
+			canvas.loadFromJSON(nextState, () => {
+				canvas.renderAll();
+			});
+		}
+	};
 
 	//MARK: - Trash 기능 설정
 	const clearCanvas = useCallback(() => {
@@ -202,7 +202,7 @@ const Sketch = () => {
 	];
 
 	const styles = {
-		
+
 		container: {
 			display: "flex",
 			flexDirection: "column",
@@ -301,7 +301,7 @@ const Sketch = () => {
 					marginBottom: "30px",
 				}}
 			/>
-	
+
 			{/* 버튼과 슬라이더 영역 */}
 			<div
 				style={{
@@ -346,7 +346,7 @@ const Sketch = () => {
 						/>
 					))}
 				</div>
-	
+
 				{/* 슬라이더와 팔레트 */}
 				<div
 					style={{
@@ -377,7 +377,7 @@ const Sketch = () => {
 					</div>
 				</div>
 			</div>
-	
+
 			{/* 캔버스 영역 */}
 			<div
 				style={{
