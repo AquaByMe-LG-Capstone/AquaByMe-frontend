@@ -1,0 +1,6 @@
+.fsButton {
+    position: absolute;
+    top: 20px;
+    left: 0px;
+    z-index: 10;
+}
