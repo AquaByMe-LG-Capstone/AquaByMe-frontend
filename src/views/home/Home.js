@@ -110,8 +110,8 @@ const Home = () => {
 			const cols = 5; // Number of columns in the grid
 			const rows = Math.ceil(shownStickers.length / cols); // Number of rows based on the number of stickers
 
-			let xOffset = 100; // Initial X position
-			let yOffset = 100; // Initial Y position
+			let xOffset = 200; // Initial X position
+			let yOffset = 250; // Initial Y position
 
 			shownStickers.forEach((sticker, index) => {
 				const svgData = sticker.sticker.svg;

@@ -128,7 +128,7 @@ const Sketch = () => {
 	const clearCanvas = useCallback(() => {
 		if (canvas) {
 			canvas.clear();
-			canvas.setBackgroundColor("#00ff0000", canvas.renderAll.bind(canvas));
+			// canvas.setBackgroundColor("#A4CBFF", canvas.renderAll.bind(canvas));
 		}
 	}, [canvas]);
 
@@ -144,10 +144,6 @@ const Sketch = () => {
 			}
 		},
 		[canvas]);
-
-	// const toggleColorPicker = useCallback(() => {
-	// 	setIsColorPickerVisible((prev) => !prev);
-	// }, []);
 
 	//MARK: - 객체 삭제
 	const deleteSelectedObjects = useCallback(() => {
@@ -189,12 +185,39 @@ const Sketch = () => {
 
 	}, [canvas, useAuth]);
 
+	//브러쉬 기능
+	const activateDrawTool = useCallback(() => {
+		if (canvas) {
+			canvas.isDrawingMode = true; 
+			setActiveTool("draw"); 
+		}
+	}, [canvas]);
+
+	//지우개 기능
+	const activateEraser = useCallback(() => {
+		if (canvas) {
+			setBrushColor("#A4CBFF"); 
+			canvas.freeDrawingBrush.color = "#A4CBFF";
+			canvas.isDrawingMode = true;
+			setActiveTool("erase");
+		}
+	}, [canvas]);
+
+	//객체선택 기능
+	const activateSelectTool = useCallback(() => {
+		if (canvas) {
+			canvas.isDrawingMode = false;
+			canvas.selection = true;
+			setActiveTool("select"); 
+		}
+	}, [canvas]);
+
 	//MARK: - 레이아웃
 	const buttons = [
 		{ icon: "trash", onClick: clearCanvas },
-		{ icon: "edit", onClick: () => setActiveTool("draw") },
-		{ icon: "eraser", onClick: () => setActiveTool("erase") },
-		{ icon: "movecursor", onClick: () => setActiveTool("select") },
+		{ icon: "edit", onClick: activateDrawTool },
+		{ icon: "eraser", onClick: activateEraser },
+		{ icon: "movecursor", onClick: activateSelectTool },
 		{ icon: "closex", onClick: deleteSelectedObjects },
 		{ icon: "check", onClick: uploadDrawing },
 		{ icon: "arrowhookleft", onClick: undo },
@@ -382,8 +405,8 @@ const Sketch = () => {
 			<div
 				style={{
 					position: "relative",
-					width: "60%", // 캔버스 너비 증가
-					height: "70%", // 캔버스 높이 감소
+					width: "60%",
+					height: "70%",
 					marginTop: "10px",
 					borderRadius: "8px",
 					backgroundColor: "#FFFFF",
@@ -407,8 +430,8 @@ const Sketch = () => {
 						position: "absolute",
 						top: "0",
 						left: "0",
-						width: "100%",
-						height: "100%",
+						width: "60%",
+						height: "70%",
 						zIndex: 2,
 					}}
 				/>
