@@ -65,11 +65,6 @@ const Sketch = () => {
 			const saveState = (event) => {
 				const currentState = canvas.toJSON();
 
-				if (activeTool === "draw") {
-					console.log("드로잉 작업 발생! Redo 상태 초기화");
-					setRedoState([]);
-				}
-
 				// Undo 이후 새로운 작업 O
 				if (currentStateIndex < state.length - 1) {
 					const updatedState = [...state.slice(0, currentStateIndex + 1), currentState];

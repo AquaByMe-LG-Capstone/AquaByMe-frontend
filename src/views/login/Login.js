@@ -43,7 +43,7 @@ const Login = ({ onLogin, onLogout }) => {
 
     return (
         <div className={styles.loginPage}>
-            <div className={styles.backgroundImage}></div>
+        <div className={styles.backgroundImage}></div>
             <h2>Login</h2>
             <InputField
                 type="text"
