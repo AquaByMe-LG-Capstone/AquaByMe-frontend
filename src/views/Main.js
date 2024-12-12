@@ -5,7 +5,7 @@ import $L from '@enact/i18n/$L';
 import Home from './home/Home';
 import Sketch from './sketch/Sketch';
 import Settings from './settings/Settings';
-import Gallery from './gallery/Gallery';
+import Gallery from './Gallery/Gallery';
 import MyStickers from './mystickers/MyStickers';
 import Login from './login/Login';
 import styles from "./Main.module.less";
