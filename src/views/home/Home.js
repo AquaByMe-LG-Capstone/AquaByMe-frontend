@@ -122,7 +122,7 @@ const Home = () => {
 						top: yOffset,
 						originX: 'center',
 						originY: 'center',
-						selectable: false,
+						selectable: true,
 					});
 
 					fish.scale(0.2);
